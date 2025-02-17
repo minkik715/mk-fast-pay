@@ -1,4 +1,4 @@
-package io.github.minkik715.io.github.minkik715.membership
+package io.github.minkik715.membership
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
