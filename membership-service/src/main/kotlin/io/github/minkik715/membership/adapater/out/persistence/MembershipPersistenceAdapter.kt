@@ -1,16 +1,14 @@
 package io.github.minkik715.membership.adapater.out.persistence
 
 import io.github.minkik715.common.PersistenceAdapter
-import io.github.minkik715.membership.adapater.`in`.web.FindMembershipRequest
-import io.github.minkik715.membership.application.port.out.FindMembershipPort
-import io.github.minkik715.membership.application.port.out.RegisterMembershipPort
+import io.github.minkik715.membership.application.port.out.MembershipOutPort
 import io.github.minkik715.membership.domain.*
 import org.springframework.data.crossstore.ChangeSetPersister
 
 @PersistenceAdapter
 class MembershipPersistenceAdapter(
     private val membershipRepository: SpringDataMembershipRepository
-): RegisterMembershipPort, FindMembershipPort {
+): MembershipOutPort {
 
     override fun createMembership(
         membershipName: MembershipName,

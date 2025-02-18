@@ -3,7 +3,9 @@ package io.github.minkik715.membership.application.port.out
 import io.github.minkik715.membership.adapater.out.persistence.MembershipJpaEntity
 import io.github.minkik715.membership.domain.*
 
-interface RegisterMembershipPort {
+interface MembershipOutPort {
+
+    fun getMembershipByMembershipId(membershipId: MembershipId) : MembershipJpaEntity
 
     fun createMembership(
         membershipName: MembershipName,

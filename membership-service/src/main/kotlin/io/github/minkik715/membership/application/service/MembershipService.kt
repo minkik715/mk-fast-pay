@@ -1,21 +1,23 @@
 package io.github.minkik715.membership.application.service
 
 import io.github.minkik715.common.UseCase
+import io.github.minkik715.membership.application.port.`in`.FindMembershipCommand
+import io.github.minkik715.membership.application.port.`in`.MembershipUseCase
 import io.github.minkik715.membership.application.port.`in`.RegisterMembershipCommand
-import io.github.minkik715.membership.application.port.`in`.RegisterMembershipUseCase
-import io.github.minkik715.membership.application.port.out.RegisterMembershipPort
+import io.github.minkik715.membership.application.port.out.MembershipOutPort
 import io.github.minkik715.membership.domain.*
-import jakarta.transaction.Transactional
-import org.springframework.stereotype.Service
 
-@Transactional
 @UseCase
-class RegisterMembershipService(
-    private val registerMembershipPort: RegisterMembershipPort
-): RegisterMembershipUseCase {
+class MembershipService(
+    private val membershipOutPort: MembershipOutPort
+): MembershipUseCase {
+    override fun getMembershipByMembershipId(query: FindMembershipCommand): Membership {
+        return membershipOutPort.getMembershipByMembershipId(MembershipId(query.membershipId)).toDomain()
+    }
+
     override fun registerMembership(command: RegisterMembershipCommand): Membership {
         // command -> DB
-        return registerMembershipPort.createMembership(
+        return membershipOutPort.createMembership(
             MembershipName(command.name),
             MembershipAddress(command.address),
             MembershipEmail(command.email),

@@ -2,9 +2,9 @@ package io.github.minkik715.membership.application.port.`in`
 
 import io.github.minkik715.common.SelfValidating
 
-data class FindMembershipQuery(
+data class FindMembershipCommand(
     val membershipId: Long
-): SelfValidating<FindMembershipQuery>() {
+): SelfValidating<FindMembershipCommand>() {
     init {
         super.validateSelf()
     }
