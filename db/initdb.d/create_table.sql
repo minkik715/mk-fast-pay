@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS mk_pay;
+USE mk_pay;

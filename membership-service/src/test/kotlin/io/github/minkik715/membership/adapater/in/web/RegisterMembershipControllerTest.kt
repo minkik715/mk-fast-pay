@@ -35,7 +35,7 @@ class RegisterMembershipControllerTest{
         )
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/memberships/register")
+            MockMvcRequestBuilders.post("/memberships")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
         )
