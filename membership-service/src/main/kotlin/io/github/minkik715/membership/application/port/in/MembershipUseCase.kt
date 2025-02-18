@@ -7,4 +7,6 @@ interface MembershipUseCase {
 
     fun registerMembership(command: RegisterMembershipCommand): Membership
 
+    fun modifyMembership(command: ModifyMembershipCommand): Membership
+
 }

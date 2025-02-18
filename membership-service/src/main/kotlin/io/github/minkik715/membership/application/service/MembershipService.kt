@@ -3,6 +3,7 @@ package io.github.minkik715.membership.application.service
 import io.github.minkik715.common.UseCase
 import io.github.minkik715.membership.application.port.`in`.FindMembershipCommand
 import io.github.minkik715.membership.application.port.`in`.MembershipUseCase
+import io.github.minkik715.membership.application.port.`in`.ModifyMembershipCommand
 import io.github.minkik715.membership.application.port.`in`.RegisterMembershipCommand
 import io.github.minkik715.membership.application.port.out.MembershipOutPort
 import io.github.minkik715.membership.domain.*
@@ -27,5 +28,16 @@ class MembershipService(
         // biz logic -> DB
         // external system
         // port, adapter
+    }
+
+    override fun modifyMembership(command: ModifyMembershipCommand): Membership {
+        return membershipOutPort.modifyMembership(
+            MembershipId(command.id),
+            MembershipName(command.name),
+            MembershipAddress(command.address),
+            MembershipEmail(command.email),
+            MembershipIsValid(command.isValid),
+            MembershipIsCorp(command.isCorp)
+        ).toDomain()
     }
 }

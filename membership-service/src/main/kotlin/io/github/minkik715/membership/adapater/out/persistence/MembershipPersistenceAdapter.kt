@@ -28,6 +28,29 @@ class MembershipPersistenceAdapter(
         )
     }
 
+    override fun modifyMembership(
+        membershipId: MembershipId,
+        membershipName: MembershipName,
+        membershipAddress: MembershipAddress,
+        membershipEmail: MembershipEmail,
+        membershipIsValid: MembershipIsValid,
+        membershipIsCorp: MembershipIsCorp
+    ): MembershipJpaEntity {
+        val entity =
+            membershipRepository.getById(membershipId.membershipId) ?: throw ChangeSetPersister.NotFoundException()
+
+        val modify = entity.modify(
+            membershipName,
+            membershipAddress,
+            membershipEmail,
+            membershipIsValid,
+            membershipIsCorp
+        )
+
+        return membershipRepository.save(modify)
+    }
+
+
     override fun getMembershipByMembershipId(membershipId: MembershipId): MembershipJpaEntity {
         return membershipRepository.getById(membershipId.membershipId) ?: throw ChangeSetPersister.NotFoundException()
     }

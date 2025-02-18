@@ -31,4 +31,19 @@ class MembershipJpaEntity(
             MembershipIsCorp(this.isCorp)
         )
     }
+
+    fun modify(
+        membershipName: MembershipName,
+        membershipAddress: MembershipAddress,
+        membershipEmail: MembershipEmail,
+        membershipIsValid: MembershipIsValid,
+        membershipIsCorp: MembershipIsCorp
+    ): MembershipJpaEntity {
+        this.name = membershipName.name
+        this.address = membershipAddress.address
+        this.email = membershipEmail.email
+        this.isValid = isValid
+        this.isCorp = isCorp
+        return this
+    }
 }
