@@ -4,3 +4,4 @@ plugins {
 rootProject.name = "mk-fast-pay"
 include("membership-service")
 include("common")
+include("banking-service")

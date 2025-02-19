@@ -1,14 +1,15 @@
 plugins {
+
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.spring") version "2.1.0"
     kotlin("plugin.jpa") version "2.1.0"
     id("org.springframework.boot") version "3.4.1"
+
     id("com.palantir.docker") version "0.36.0"
 }
 
-group = "io.github.minkik715"
+group = "io.github.minkik715.mkpay.banking"
 version = "0.0.1"
-
 
 repositories {
     mavenCentral()

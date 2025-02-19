@@ -42,8 +42,8 @@ class MembershipJpaEntity(
         this.name = membershipName.name
         this.address = membershipAddress.address
         this.email = membershipEmail.email
-        this.isValid = isValid
-        this.isCorp = isCorp
+        this.isValid = membershipIsValid.isValid
+        this.isCorp = membershipIsCorp.isCorp
         return this
     }
 }
