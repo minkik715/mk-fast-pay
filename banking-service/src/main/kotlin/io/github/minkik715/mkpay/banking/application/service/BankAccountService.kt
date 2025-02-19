@@ -1,18 +1,18 @@
 package io.github.minkik715.mkpay.banking.application.service
 
 import io.github.minkik715.common.UseCase
-import io.github.minkik715.mkpay.banking.adapter.`in`.web.FindBankAccountsCommand
-import io.github.minkik715.mkpay.banking.adapter.out.external.bank.GetBankAccountRequest
+import io.github.minkik715.mkpay.banking.application.port.`in`.FindBankAccountsCommand
+import io.github.minkik715.mkpay.banking.application.port.out.GetBankAccountRequest
 import io.github.minkik715.mkpay.banking.application.port.`in`.BankAccountUseCase
 import io.github.minkik715.mkpay.banking.application.port.`in`.RegisterAccountCommand
 import io.github.minkik715.mkpay.banking.application.port.out.BankAccountPort
-import io.github.minkik715.mkpay.banking.application.port.out.BankExternalAccountPort
+import io.github.minkik715.mkpay.banking.application.port.out.BankExternalPort
 import io.github.minkik715.mkpay.banking.domain.*
 
 @UseCase
 class BankAccountService(
     private val bankAccountPort: BankAccountPort,
-    private val bankExternalAccountPort: BankExternalAccountPort
+    private val bankExternalPort: BankExternalPort
 ): BankAccountUseCase {
     override fun createRegisteredBankAccount(command: RegisterAccountCommand): BankAccount? {
 
@@ -29,7 +29,7 @@ class BankAccountService(
         // 2. 등록가능한 계좌라면, 등록한다.
 
         // 2-1. 등록가능하지 않ㄴ은 계좌라면, 에러를 리런
-        val bankAccountInfo = bankExternalAccountPort.getBankAccountInfo(
+        val bankAccountInfo = bankExternalPort.getBankAccountInfo(
             GetBankAccountRequest(
                 command.bankName,
                 command.bankAccountNumber
@@ -42,7 +42,7 @@ class BankAccountService(
                 BankName(command.bankName),
                 BankAccountNumber(command.bankAccountNumber),
                 LinkedStatusIstValid(command.linkedStatusIsValid)
-            ).toDomain()
+            )
         } else{
             return null
         }
@@ -51,6 +51,6 @@ class BankAccountService(
     override fun getBankAccounts(command: FindBankAccountsCommand): List<BankAccount> {
         //membershipId 유효성 검사 필요
 
-        return bankAccountPort.findBankAccounts(MembershipId(command.membershipId)).map { it.toDomain() }
+        return bankAccountPort.findBankAccounts(MembershipId(command.membershipId))
     }
 }

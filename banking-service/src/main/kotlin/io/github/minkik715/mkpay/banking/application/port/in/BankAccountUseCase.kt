@@ -1,6 +1,5 @@
 package io.github.minkik715.mkpay.banking.application.port.`in`
 
-import io.github.minkik715.mkpay.banking.adapter.`in`.web.FindBankAccountsCommand
 import io.github.minkik715.mkpay.banking.domain.BankAccount
 
 interface BankAccountUseCase {

@@ -13,7 +13,7 @@ class BankAccountAdapter(
         bankName: BankName,
         bankAccountNumber: BankAccountNumber,
         linkedStatusIsValid: LinkedStatusIstValid
-    ): BankAccountJpaEntity {
+    ): BankAccount {
         return springDataRegisteredBankAccountRepository.save(
             BankAccountJpaEntity(
                 membershipId = membershipId.membershipId,
@@ -21,10 +21,10 @@ class BankAccountAdapter(
                 bankAccountNumber = bankAccountNumber.backAccountNumber,
                 linkedStatusIsValid = linkedStatusIsValid.linkedStatusIsValid
             )
-        )
+        ).toDomain()
     }
 
-    override fun findBankAccounts(membershipId: MembershipId): List<BankAccountJpaEntity> {
-        return springDataRegisteredBankAccountRepository.findAllByMembershipId(membershipId.membershipId).toList()
+    override fun findBankAccounts(membershipId: MembershipId): List<BankAccount> {
+        return springDataRegisteredBankAccountRepository.findAllByMembershipId(membershipId.membershipId).map { it.toDomain() }
     }
 }

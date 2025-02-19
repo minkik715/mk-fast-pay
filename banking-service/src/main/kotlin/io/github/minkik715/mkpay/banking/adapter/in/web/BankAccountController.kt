@@ -2,6 +2,7 @@ package io.github.minkik715.mkpay.banking.adapter.`in`.web
 
 import io.github.minkik715.common.WebAdapter
 import io.github.minkik715.mkpay.banking.application.port.`in`.BankAccountUseCase
+import io.github.minkik715.mkpay.banking.application.port.`in`.FindBankAccountsCommand
 import io.github.minkik715.mkpay.banking.application.port.`in`.RegisterAccountCommand
 import io.github.minkik715.mkpay.banking.domain.BankAccount
 import org.springframework.http.HttpStatus

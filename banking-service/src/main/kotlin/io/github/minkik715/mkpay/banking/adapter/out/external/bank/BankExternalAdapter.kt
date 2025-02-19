@@ -1,13 +1,17 @@
 package io.github.minkik715.mkpay.banking.adapter.out.external.bank
 
 import io.github.minkik715.common.ExternalAdapter
-import io.github.minkik715.mkpay.banking.application.port.out.BankExternalAccountPort
+import io.github.minkik715.mkpay.banking.application.port.out.*
 
 @ExternalAdapter
-class BankExternalAccountAdapter: BankExternalAccountPort {
+class BankExternalAdapter: BankExternalPort {
 
     override fun getBankAccountInfo(request: GetBankAccountRequest): GetBankAccountResponse {
 
         return GetBankAccountResponse(request.bankName, request.bankAccountNumber, true)
+    }
+
+    override fun requestExternalFirmbanking(request: FirmbankingExternalRequest): FirmbankingExternalResponse {
+        return FirmbankingExternalResponse(0)
     }
 }
