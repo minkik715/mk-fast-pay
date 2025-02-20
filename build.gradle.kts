@@ -35,6 +35,10 @@ subprojects {
     dependencies {
         annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
         implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+        implementation("org.springframework.boot:spring-boot-starter-aop")
+        implementation("org.springframework.kafka:spring-kafka")
+
+
 
         testImplementation ("org.testcontainers:mysql")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
