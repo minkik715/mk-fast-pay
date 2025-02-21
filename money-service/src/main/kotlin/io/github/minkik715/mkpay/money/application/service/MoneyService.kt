@@ -1,6 +1,6 @@
 package io.github.minkik715.mkpay.money.application.service
 
-import io.github.minkik715.common.UseCase
+import io.github.minkik715.mkpay.common.UseCase
 import io.github.minkik715.mkpay.money.application.port.`in`.IncreaseMoneyCommand
 import io.github.minkik715.mkpay.money.application.port.`in`.MoneyUseCase
 import io.github.minkik715.mkpay.money.application.port.out.MemberMoneyPort

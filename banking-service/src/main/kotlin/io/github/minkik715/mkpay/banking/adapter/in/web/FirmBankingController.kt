@@ -1,6 +1,6 @@
 package io.github.minkik715.mkpay.banking.adapter.`in`.web
 
-import io.github.minkik715.common.WebAdapter
+import io.github.minkik715.mkpay.common.WebAdapter
 import io.github.minkik715.mkpay.banking.application.port.`in`.*
 import io.github.minkik715.mkpay.banking.domain.FirmbankingRequest
 import org.springframework.http.HttpStatus

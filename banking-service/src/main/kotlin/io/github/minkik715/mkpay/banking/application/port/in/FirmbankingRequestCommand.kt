@@ -1,6 +1,6 @@
 package io.github.minkik715.mkpay.banking.application.port.`in`
 
-import io.github.minkik715.common.SelfValidating
+import io.github.minkik715.mkpay.common.SelfValidating
 import jakarta.validation.constraints.NotBlank
 import org.hibernate.validator.constraints.Length
 

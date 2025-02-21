@@ -1,6 +1,6 @@
 package io.github.minkik715.mkpay.banking.application.service
 
-import io.github.minkik715.common.UseCase
+import io.github.minkik715.mkpay.common.UseCase
 import io.github.minkik715.mkpay.banking.application.port.`in`.FirmbankingRequestCommand
 import io.github.minkik715.mkpay.banking.application.port.`in`.FirmbankingUseCase
 import io.github.minkik715.mkpay.banking.application.port.out.BankExternalPort

@@ -1,6 +1,6 @@
 package io.github.minkik715.mkpay.banking.adapter.out.external.bank
 
-import io.github.minkik715.common.ExternalAdapter
+import io.github.minkik715.mkpay.common.ExternalAdapter
 import io.github.minkik715.mkpay.banking.application.port.out.*
 
 @ExternalAdapter

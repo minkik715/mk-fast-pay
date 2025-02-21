@@ -1,6 +1,6 @@
 package io.github.minkik715.mkpay.money.adapter.`in`.web
 
-import io.github.minkik715.common.WebAdapter
+import io.github.minkik715.mkpay.common.WebAdapter
 import io.github.minkik715.mkpay.money.application.port.`in`.IncreaseMoneyCommand
 import io.github.minkik715.mkpay.money.application.port.`in`.MoneyUseCase
 import org.springframework.web.bind.annotation.*
