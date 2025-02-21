@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "2.1.0"
     id("org.springframework.boot") version "3.4.1"
     id("io.freefair.lombok") version "8.4" apply false
+    id("io.spring.dependency-management") version "1.1.4"
 }
 
 group = "io.github.minkik715"
@@ -37,6 +38,8 @@ subprojects {
         implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
         implementation("org.springframework.boot:spring-boot-starter-aop")
         implementation("org.springframework.kafka:spring-kafka")
+        implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+        implementation("io.github.openfeign:feign-jackson")
 
 
 
@@ -45,12 +48,21 @@ subprojects {
         testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     }
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2024.0.0") // 최신 버전 확인 후 사용
+        }
+    }
+
 
     tasks.withType<Test> {
         useJUnitPlatform()
     }
 
+
 }
+
+
 
 tasks.getByName<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
     enabled = false

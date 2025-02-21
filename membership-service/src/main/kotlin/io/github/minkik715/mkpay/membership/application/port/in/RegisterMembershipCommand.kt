@@ -25,7 +25,7 @@ data class RegisterMembershipCommand(
     val isValid: Boolean,
 
     val isCorp: Boolean,
-): SelfValidating<io.github.minkik715.mkpay.membership.application.port.`in`.RegisterMembershipCommand>(){
+): SelfValidating<RegisterMembershipCommand>(){
     init {
         super.validateSelf()
     }

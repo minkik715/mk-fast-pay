@@ -1,7 +1,7 @@
 package io.github.minkik715.mkpay.banking.adapter.out.persistence
 
 import io.github.minkik715.mkpay.common.PersistenceAdapter
-import io.github.minkik715.mkpay.banking.application.port.out.BankAccountPort
+import io.github.minkik715.mkpay.banking.application.port.out.persistence.bankaccount.BankAccountPort
 import io.github.minkik715.mkpay.banking.domain.*
 
 @PersistenceAdapter

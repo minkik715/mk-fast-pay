@@ -15,14 +15,14 @@ class Membership private constructor(
     companion object {
         // MemberShip 을 만들기 위해선 반드시 필요
         fun generateMember(
-            membershipId: io.github.minkik715.mkpay.membership.domain.MembershipId,
-            name: io.github.minkik715.mkpay.membership.domain.MembershipName,
-            email: io.github.minkik715.mkpay.membership.domain.MembershipEmail,
-            address: io.github.minkik715.mkpay.membership.domain.MembershipAddress,
-            isValid: io.github.minkik715.mkpay.membership.domain.MembershipIsValid,
-            isCorp: io.github.minkik715.mkpay.membership.domain.MembershipIsCorp,
-        ): io.github.minkik715.mkpay.membership.domain.Membership {
-            return io.github.minkik715.mkpay.membership.domain.Membership(
+            membershipId: MembershipId,
+            name: MembershipName,
+            email: MembershipEmail,
+            address: MembershipAddress,
+            isValid: MembershipIsValid,
+            isCorp: MembershipIsCorp,
+        ): Membership {
+            return Membership(
                 membershipId = membershipId.membershipId,
                 name = name.name,
                 email = email.email,

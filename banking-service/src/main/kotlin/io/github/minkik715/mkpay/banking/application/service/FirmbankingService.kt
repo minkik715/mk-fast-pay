@@ -3,10 +3,10 @@ package io.github.minkik715.mkpay.banking.application.service
 import io.github.minkik715.mkpay.common.UseCase
 import io.github.minkik715.mkpay.banking.application.port.`in`.FirmbankingRequestCommand
 import io.github.minkik715.mkpay.banking.application.port.`in`.FirmbankingUseCase
-import io.github.minkik715.mkpay.banking.application.port.out.BankExternalPort
-import io.github.minkik715.mkpay.banking.application.port.out.FirmBankingPort
-import io.github.minkik715.mkpay.banking.application.port.out.FirmbankingExternalRequest
-import io.github.minkik715.mkpay.banking.application.port.out.UpdateFirmbankingStatusRequest
+import io.github.minkik715.mkpay.banking.application.port.out.external.BankExternalPort
+import io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking.FirmBankingPort
+import io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking.FirmbankingExternalRequest
+import io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking.UpdateFirmbankingStatusRequest
 import io.github.minkik715.mkpay.banking.domain.*
 import jakarta.transaction.Transactional
 import java.util.*
@@ -34,13 +34,15 @@ class FirmbankingService(
 
 
         // 2. 외부 은행 펌뱅킹 요청
-        val externalFirmbankingResult = firmbankingExternalPort.requestExternalFirmbanking(FirmbankingExternalRequest(
+        val externalFirmbankingResult = firmbankingExternalPort.requestExternalFirmbanking(
+            FirmbankingExternalRequest(
             command.fromBankName,
             command.fromBankAccountNumber,
             command.toBankName,
             command.toBankAccountNumber,
             command.moneyAmount
-        ))
+        )
+        )
 
         var uuid: String = UUID.randomUUID().toString()
 

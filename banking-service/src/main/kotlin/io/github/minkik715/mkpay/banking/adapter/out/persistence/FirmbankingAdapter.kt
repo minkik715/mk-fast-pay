@@ -1,8 +1,8 @@
 package io.github.minkik715.mkpay.banking.adapter.out.persistence
 
 import io.github.minkik715.mkpay.common.PersistenceAdapter
-import io.github.minkik715.mkpay.banking.application.port.out.FirmBankingPort
-import io.github.minkik715.mkpay.banking.application.port.out.UpdateFirmbankingStatusRequest
+import io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking.FirmBankingPort
+import io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking.UpdateFirmbankingStatusRequest
 import io.github.minkik715.mkpay.banking.domain.*
 import java.util.*
 

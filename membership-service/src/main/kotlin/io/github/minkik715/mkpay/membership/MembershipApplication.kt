@@ -8,5 +8,5 @@ class MembershipApplication
 
 
 fun main(args: Array<String>){
-    runApplication<io.github.minkik715.mkpay.membership.MembershipApplication>(*args)
+    runApplication<MembershipApplication>(*args)
 }

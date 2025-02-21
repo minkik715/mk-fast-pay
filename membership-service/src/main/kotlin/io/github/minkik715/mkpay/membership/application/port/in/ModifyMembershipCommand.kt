@@ -29,7 +29,7 @@ data class ModifyMembershipCommand(
 
     @NotNull
     val isCorp: Boolean,
-): SelfValidating<io.github.minkik715.mkpay.membership.application.port.`in`.ModifyMembershipCommand>(){
+): SelfValidating<ModifyMembershipCommand>(){
     init {
         super.validateSelf()
     }

@@ -12,21 +12,21 @@ import org.springframework.web.bind.annotation.*
 @WebAdapter
 @RestController
 class MembershipController(
-    private val membershipUseCase: io.github.minkik715.mkpay.membership.application.port.`in`.MembershipUseCase,
+    private val membershipUseCase: MembershipUseCase,
 ) {
 
     @GetMapping("/memberships/{membershipId}")
-    fun getMembershipByMemberId(@PathVariable("membershipId") membershipId: Long): ResponseEntity<io.github.minkik715.mkpay.membership.domain.Membership> {
+    fun getMembershipByMemberId(@PathVariable("membershipId") membershipId: Long): ResponseEntity<Membership> {
         val findMembershipCommand =
-            io.github.minkik715.mkpay.membership.application.port.`in`.FindMembershipCommand(membershipId)
+            FindMembershipCommand(membershipId)
 
         return ResponseEntity.ok(membershipUseCase.getMembershipByMembershipId(findMembershipCommand))
     }
 
     @PostMapping("/memberships")
-    fun registerMembership(@RequestBody request: io.github.minkik715.mkpay.membership.adapater.`in`.web.RegisterMembershipRequest): io.github.minkik715.mkpay.membership.domain.Membership {
+    fun registerMembership(@RequestBody request: RegisterMembershipRequest): Membership {
         // request -> Command (Requst 변화에 따른 Command/ UseCase 변화 최소화)
-        val command = io.github.minkik715.mkpay.membership.application.port.`in`.RegisterMembershipCommand(
+        val command = RegisterMembershipCommand(
             name = request.name,
             address = request.address,
             email = request.email,
@@ -38,9 +38,9 @@ class MembershipController(
     }
 
     @PutMapping("/memberships")
-    fun modifyMembership(@RequestBody request: io.github.minkik715.mkpay.membership.adapater.`in`.web.ModifyMembershipRequest): io.github.minkik715.mkpay.membership.domain.Membership {
+    fun modifyMembership(@RequestBody request: ModifyMembershipRequest): Membership {
         // request -> Command (Requst 변화에 따른 Command/ UseCase 변화 최소화)
-        val command = io.github.minkik715.mkpay.membership.application.port.`in`.ModifyMembershipCommand(
+        val command = ModifyMembershipCommand(
             id = request.id,
             name = request.name,
             address = request.address,

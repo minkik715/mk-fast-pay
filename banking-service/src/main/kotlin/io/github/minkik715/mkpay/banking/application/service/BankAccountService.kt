@@ -2,21 +2,26 @@ package io.github.minkik715.mkpay.banking.application.service
 
 import io.github.minkik715.mkpay.common.UseCase
 import io.github.minkik715.mkpay.banking.application.port.`in`.FindBankAccountsCommand
-import io.github.minkik715.mkpay.banking.application.port.out.GetBankAccountRequest
+import io.github.minkik715.mkpay.banking.application.port.out.persistence.bankaccount.GetBankAccountRequest
 import io.github.minkik715.mkpay.banking.application.port.`in`.BankAccountUseCase
 import io.github.minkik715.mkpay.banking.application.port.`in`.RegisterAccountCommand
-import io.github.minkik715.mkpay.banking.application.port.out.BankAccountPort
-import io.github.minkik715.mkpay.banking.application.port.out.BankExternalPort
+import io.github.minkik715.mkpay.banking.application.port.out.persistence.bankaccount.BankAccountPort
+import io.github.minkik715.mkpay.banking.application.port.out.external.BankExternalPort
+import io.github.minkik715.mkpay.banking.application.port.out.svc.membership.MembershipPort
 import io.github.minkik715.mkpay.banking.domain.*
 
 @UseCase
 class BankAccountService(
     private val bankAccountPort: BankAccountPort,
-    private val bankExternalPort: BankExternalPort
+    private val bankExternalPort: BankExternalPort,
+    private val membershipPort: MembershipPort
 ): BankAccountUseCase {
     override fun createRegisteredBankAccount(command: RegisterAccountCommand): BankAccount? {
 
-        command.membershipId
+        membershipPort.getMembership(command.membershipId)?.let {
+            if(!it.isValid) return null
+        }?: return null
+
 
         // 은행 계좌를 등록해야하는 서비스 ( 비즈니스 로직)
 

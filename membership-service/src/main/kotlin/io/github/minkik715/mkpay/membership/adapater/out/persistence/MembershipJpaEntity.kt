@@ -1,6 +1,5 @@
 package io.github.minkik715.mkpay.membership.adapater.out.persistence
 
-import io.github.minkik715.membership.domain.*
 import jakarta.persistence.*
 
 
@@ -38,7 +37,7 @@ class MembershipJpaEntity(
         membershipEmail: io.github.minkik715.mkpay.membership.domain.MembershipEmail,
         membershipIsValid: io.github.minkik715.mkpay.membership.domain.MembershipIsValid,
         membershipIsCorp: io.github.minkik715.mkpay.membership.domain.MembershipIsCorp
-    ): io.github.minkik715.mkpay.membership.adapater.out.persistence.MembershipJpaEntity {
+    ): MembershipJpaEntity {
         this.name = membershipName.name
         this.address = membershipAddress.address
         this.email = membershipEmail.email

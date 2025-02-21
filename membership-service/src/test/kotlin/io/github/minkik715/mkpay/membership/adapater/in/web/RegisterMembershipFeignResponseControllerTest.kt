@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class RegisterMembershipControllerTest{
+class RegisterMembershipFeignResponseControllerTest{
 
 
     @Autowired

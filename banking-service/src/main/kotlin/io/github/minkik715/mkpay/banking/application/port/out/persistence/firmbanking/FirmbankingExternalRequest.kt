@@ -1,4 +1,4 @@
-package io.github.minkik715.mkpay.banking.application.port.out
+package io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking
 
 data class FirmbankingExternalRequest(
     val fromBankName: String,
