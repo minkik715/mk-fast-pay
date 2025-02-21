@@ -15,7 +15,7 @@ class MoneyController(
     fun increaseMoneyRequest(@RequestBody request: IncreaseMoneyRequest): MoneyChangingResultDetail {
         // request -> Command (Requst 변화에 따른 Command/ UseCase 변화 최소화)
         val command = IncreaseMoneyCommand(request.targetMembershipId, request.amount)
-        val requestIncreaseMoney = moneyUseCase.requestIncreaseMoney(command)
+        val requestIncreaseMoney = moneyUseCase.requestIncreaseMoneyAsync(command)
 
         return MoneyChangingResultDetail(requestIncreaseMoney)
     }

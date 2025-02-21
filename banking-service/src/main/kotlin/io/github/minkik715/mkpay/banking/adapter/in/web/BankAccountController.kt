@@ -17,7 +17,7 @@ class BankAccountController(
 ) {
 
     @GetMapping("/bank-accounts/{membershipId}")
-    fun getMembershipByMemberId(@PathVariable("membershipId") membershipId: Long): ResponseEntity<List<BankAccount>> {
+    fun getBankAccounts(@PathVariable("membershipId") membershipId: Long): ResponseEntity<List<BankAccount>> {
         val command = FindBankAccountsCommand(membershipId)
         return ResponseEntity.ok(bankAccountUseCase.getBankAccounts(command))
     }

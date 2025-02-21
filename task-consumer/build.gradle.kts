@@ -8,7 +8,7 @@ plugins {
     id("com.palantir.docker") version "0.36.0"
 }
 
-group = "io.github.minkik715.mkpay.money"
+group = "io.github.minkik715.mkpay.taskconsumer"
 version = "0.0.1"
 
 repositories {
@@ -16,12 +16,11 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation ("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    //implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    implementation("com.mysql:mysql-connector-j")
+    //implementation("com.mysql:mysql-connector-j")
 
     implementation(project(":common"))
 

@@ -1,4 +1,4 @@
-package io.github.minkik715.mkpay.banking.io.github.minkik715.mkpay.money
+package io.github.minkik715.mkpay.money
 
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info

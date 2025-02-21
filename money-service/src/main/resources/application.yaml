@@ -19,3 +19,7 @@ kafka:
     bootstrap-servers: http://localhost:29092
 logging:
   topic: mkpay.logging.out.stdout
+
+task:
+  result:
+    topic: mkpay.task.result.topic

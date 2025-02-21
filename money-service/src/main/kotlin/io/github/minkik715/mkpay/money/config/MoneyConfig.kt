@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ComponentScan("io.github.minkik715.mkpay.common")
-@EnableFeignClients
+@EnableFeignClients(basePackages = ["io.github.minkik715.mkpay.common.feign.*"])
 class MoneyConfig {
 }
