@@ -1,5 +1,6 @@
 package io.github.minkik715.mkpay.membership.adapater.out.persistence
 
+import io.github.minkik715.mkpay.membership.domain.*
 import jakarta.persistence.*
 
 
@@ -20,23 +21,23 @@ class MembershipJpaEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private var membershipId: Long = 0
 
-    fun toDomain(): io.github.minkik715.mkpay.membership.domain.Membership {
-        return io.github.minkik715.mkpay.membership.domain.Membership.generateMember(
-            io.github.minkik715.mkpay.membership.domain.MembershipId(this.membershipId),
-            io.github.minkik715.mkpay.membership.domain.MembershipName(this.name),
-            io.github.minkik715.mkpay.membership.domain.MembershipEmail(this.email),
-            io.github.minkik715.mkpay.membership.domain.MembershipAddress(this.address),
-            io.github.minkik715.mkpay.membership.domain.MembershipIsValid(this.isValid),
-            io.github.minkik715.mkpay.membership.domain.MembershipIsCorp(this.isCorp)
+    fun toDomain(): Membership {
+        return Membership.generateMember(
+            membershipId = MembershipId(this.membershipId),
+            name = MembershipName(this.name),
+            email = MembershipEmail(this.email),
+            address = MembershipAddress(this.address),
+            isValid = MembershipIsValid(this.isValid),
+            isCorp = MembershipIsCorp(this.isCorp)
         )
     }
 
     fun modify(
-        membershipName: io.github.minkik715.mkpay.membership.domain.MembershipName,
-        membershipAddress: io.github.minkik715.mkpay.membership.domain.MembershipAddress,
-        membershipEmail: io.github.minkik715.mkpay.membership.domain.MembershipEmail,
-        membershipIsValid: io.github.minkik715.mkpay.membership.domain.MembershipIsValid,
-        membershipIsCorp: io.github.minkik715.mkpay.membership.domain.MembershipIsCorp
+        membershipName: MembershipName,
+        membershipAddress: MembershipAddress,
+        membershipEmail: MembershipEmail,
+        membershipIsValid: MembershipIsValid,
+        membershipIsCorp: MembershipIsCorp
     ): MembershipJpaEntity {
         this.name = membershipName.name
         this.address = membershipAddress.address
