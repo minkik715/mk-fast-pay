@@ -69,6 +69,7 @@ class MoneyService(
 
     }
 
+    @Transactional
     override fun requestIncreaseMoneyAsync(
         command: IncreaseMoneyCommand
     ): MoneyChangingRequest {
