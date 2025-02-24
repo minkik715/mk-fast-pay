@@ -4,7 +4,6 @@ import RechargingMoneyTask
 import io.github.minkik715.mkpay.common.CountDownLatchManger
 import io.github.minkik715.mkpay.common.SubTask
 import io.github.minkik715.mkpay.common.UseCase
-import io.github.minkik715.mkpay.common.feign.banking.BankingFeign
 import io.github.minkik715.mkpay.common.feign.membership.MembershipFeign
 import io.github.minkik715.mkpay.money.application.port.`in`.IncreaseMoneyCommand
 import io.github.minkik715.mkpay.money.application.port.`in`.MoneyUseCase
@@ -12,6 +11,8 @@ import io.github.minkik715.mkpay.money.application.port.out.MemberMoneyPort
 import io.github.minkik715.mkpay.money.application.port.out.MoneyPort
 import io.github.minkik715.mkpay.money.application.port.out.SendRechargingMoneyTaskPort
 import io.github.minkik715.mkpay.money.application.port.out.UpdateMoneyChangingStatusRequest
+import io.github.minkik715.mkpay.money.application.port.out.svc.BankPort
+import io.github.minkik715.mkpay.money.application.port.out.svc.MembershipPort
 import io.github.minkik715.mkpay.money.domain.*
 import jakarta.transaction.Transactional
 import java.util.Date
@@ -21,8 +22,8 @@ import java.util.UUID
 class MoneyService(
     private val moneyPort: MoneyPort,
     private val memberMoneyPort: MemberMoneyPort,
-    private val membershipFeign: MembershipFeign,
-    private val bankingFeign: BankingFeign,
+    private val bankPort: BankPort,
+    private val membershipPort: MembershipPort,
     private val sendRechargingMoneyTaskPort: SendRechargingMoneyTaskPort,
     private val countDownLatchManger: CountDownLatchManger
 ):  MoneyUseCase{
@@ -32,14 +33,14 @@ class MoneyService(
 
         // 머니의 충전
         // 1 고객 정보가 정상인지 확인 (멤버)
-        membershipFeign.getMembershipByMemberId(command.targetMembershipId).let {
-            if(it.body?.isValid != true) throw IllegalArgumentException("IncreaseMoney command cannot be invalid")
+        membershipPort.getMembershipByMemberId(command.targetMembershipId).let {
+            if(it?.isValid != true) throw IllegalArgumentException("Invalid membershipId")
         }
 
 
         // 2. 고객의 연동된 계좌가 있는지 정상적인지, 잔액이 충분한지 (뱅킹)
-        bankingFeign.getMembershipByMemberId(command.targetMembershipId).let {
-            if(it.body?.first()?.linkedStatusIsValid != true) throw IllegalArgumentException("IncreaseMoney command cannot be invalid")
+        bankPort.getAccountValidByMemberId(command.targetMembershipId) .let {
+            if(it?.isValid != true) throw IllegalArgumentException("membership bank account invalid")
         }
         // 3. 법인 계좌 상태가 정산인지 (뱅킹)
 
@@ -64,9 +65,6 @@ class MoneyService(
         ))
 
         return moneyChangingRequest
-        //6-2. 실패
-
-
     }
 
     @Transactional
@@ -118,6 +116,7 @@ class MoneyService(
         sendRechargingMoneyTaskPort.sendRechargingMoneyTaskPort(mainTask)
         // 3. Wait
 
+        // POD가 여러개일 경우 문제가 발생 Redis pub/sub를 통해서 문제해결 필요
         countDownLatchManger.addCountDownLatch(mainTask.taskId).await()
 
         //3-1. task-consumer 모두 Ok
