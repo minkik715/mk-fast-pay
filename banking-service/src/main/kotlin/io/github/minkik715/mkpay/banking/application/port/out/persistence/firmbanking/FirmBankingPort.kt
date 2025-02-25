@@ -9,8 +9,13 @@ interface FirmBankingPort {
         toBankName: ToBankName,
         toBankAccountNumber: ToBankAccountNumber,
         moneyAmount: MoneyAmount,
-        firmbankingStatus: FirmbankingStatus
+        firmbankingStatus: FirmbankingStatus,
+        aggregateIdentifier: FirmbankingRequestAggregateIdentifier? = null
     ): FirmbankingRequest
 
+
+
     fun updateFirmbankingStatus(updateFirmbankingStatusRequest: UpdateFirmbankingStatusRequest): FirmbankingRequest
+
+    fun getFirmbankingByRequestId(firmbankingRequestId: FirmbankingRequestId): FirmbankingRequest?
 }

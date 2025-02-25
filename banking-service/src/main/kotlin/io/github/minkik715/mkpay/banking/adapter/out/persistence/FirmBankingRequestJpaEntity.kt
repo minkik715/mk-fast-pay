@@ -2,7 +2,6 @@ package io.github.minkik715.mkpay.banking.adapter.out.persistence
 
 import io.github.minkik715.mkpay.banking.domain.*
 import jakarta.persistence.*
-import java.util.UUID
 
 @Entity
 @Table(name = "firmbanking_request")
@@ -20,6 +19,7 @@ class FirmBankingRequestJpaEntity(
     private var firmbankingStatus: Int,
 
     private var uuid: String,
+    private var aggregateIdentifier: String? = null,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +40,8 @@ class FirmBankingRequestJpaEntity(
             ToBankAccountNumber(toBankAccountNumber),
             MoneyAmount(moneyAmount),
             FirmbankingStatus(firmbankingStatus),
-            uuid
+            uuid,
+            FirmbankingRequestAggregateIdentifier(aggregateIdentifier?:"")
         )
     }
 }

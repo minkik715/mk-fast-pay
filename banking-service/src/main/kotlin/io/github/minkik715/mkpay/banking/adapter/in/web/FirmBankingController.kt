@@ -32,5 +32,28 @@ class FirmbankingController(
         return firmbankingUseCase.requestFirmbanking(command)?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Bank Account Info")
     }
 
+    @PostMapping("/firmbanking-eda")
+    fun registerMembershipEda(@RequestBody request: RequestFirmbankingRequest) {
+        // request -> Command (Requst 변화에 따른 Command/ UseCase 변화 최소화)
+        val command = FirmbankingRequestCommand(
+            fromBankName = request.fromBankName,
+            fromBankAccountNumber = request.fromBankAccountNumber,
+            toBankName = request.toBankName,
+            toBankAccountNumber = request.toBankAccountNumber,
+            moneyAmount = request.moneyAmount,
+        )
+        firmbankingUseCase.requestFirmbankingByEvent(command)?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Bank Account Info")
+    }
+
+    @PutMapping("/firmbanking-eda")
+    fun registerMembershipEda(@RequestBody request: UpdateFirmBankingRequest) {
+        // request -> Command (Requst 변화에 따른 Command/ UseCase 변화 최소화)
+        val command = FirmbankingUpdateCommand(
+            request.firmbankingRequestId,
+            request.status
+        )
+        firmbankingUseCase.updateFirmbankingByEvent(command)
+    }
+
 
 }

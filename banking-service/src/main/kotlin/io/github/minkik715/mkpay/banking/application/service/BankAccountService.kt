@@ -1,5 +1,6 @@
 package io.github.minkik715.mkpay.banking.application.service
 
+import io.github.minkik715.mkpay.banking.adapter.out.axon.command.RequestFirmbankingAxonCommand
 import io.github.minkik715.mkpay.common.UseCase
 import io.github.minkik715.mkpay.banking.application.port.`in`.FindBankAccountsCommand
 import io.github.minkik715.mkpay.banking.application.port.out.persistence.bankaccount.GetBankAccountRequest
@@ -9,6 +10,7 @@ import io.github.minkik715.mkpay.banking.application.port.out.persistence.bankac
 import io.github.minkik715.mkpay.banking.application.port.out.external.BankExternalPort
 import io.github.minkik715.mkpay.banking.application.port.out.svc.membership.MembershipPort
 import io.github.minkik715.mkpay.banking.domain.*
+import java.util.UUID
 
 @UseCase
 class BankAccountService(

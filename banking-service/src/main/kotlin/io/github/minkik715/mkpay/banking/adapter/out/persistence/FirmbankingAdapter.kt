@@ -4,6 +4,7 @@ import io.github.minkik715.mkpay.common.PersistenceAdapter
 import io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking.FirmBankingPort
 import io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking.UpdateFirmbankingStatusRequest
 import io.github.minkik715.mkpay.banking.domain.*
+import org.springframework.data.repository.findByIdOrNull
 import java.util.*
 
 @PersistenceAdapter
@@ -16,7 +17,8 @@ class FirmbankingAdapter(
         toBankName: ToBankName,
         toBankAccountNumber: ToBankAccountNumber,
         moneyAmount: MoneyAmount,
-        firmbankingStatus: FirmbankingStatus
+        firmbankingStatus: FirmbankingStatus,
+        aggregateIdentifier: FirmbankingRequestAggregateIdentifier?
     ): FirmbankingRequest {
         return springDataFirmbankingRepository.save(
             FirmBankingRequestJpaEntity(
@@ -27,6 +29,7 @@ class FirmbankingAdapter(
                 moneyAmount = moneyAmount.moneyAmount,
                 firmbankingStatus = firmbankingStatus.firmbankingStatus,
                 uuid = UUID.randomUUID().toString(),
+                aggregateIdentifier = aggregateIdentifier?.aggregateIdentifier
             )
         ).toDomain()
     }
@@ -37,5 +40,9 @@ class FirmbankingAdapter(
         val entity = springDataFirmbankingRepository.getById(updateFirmbankingStatusRequest.firmbankingRequestId.firmbankingRequestId)
         entity.updateFirmbankingStatus(updateFirmbankingStatusRequest.firmbankingStatus, updateFirmbankingStatusRequest.uuid)
         return springDataFirmbankingRepository.save(entity).toDomain()
+    }
+
+    override fun getFirmbankingByRequestId(firmbankingRequestId: FirmbankingRequestId): FirmbankingRequest? {
+        return springDataFirmbankingRepository.findByIdOrNull(firmbankingRequestId.firmbankingRequestId)?.toDomain()
     }
 }

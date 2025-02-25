@@ -9,7 +9,8 @@ class FirmbankingRequest private constructor(
     val toBankAccountNumber: String,
     val moneyAmount: Int,
     val firmbankingStatus: Int, //0: 요청, 1:완료, 2:실패
-    val uuid: String
+    val uuid: String,
+    val aggregateIdentifier: String,
 ){
     companion object {
         fun generateFirmbanking(
@@ -20,7 +21,8 @@ class FirmbankingRequest private constructor(
             toBankAccountNumber: ToBankAccountNumber,
             moneyAmount: MoneyAmount,
             firmbankingStatus: FirmbankingStatus,
-            uuid: String
+            uuid: String,
+            aggregateIdentifier: FirmbankingRequestAggregateIdentifier = FirmbankingRequestAggregateIdentifier("")
         ): FirmbankingRequest {
             return FirmbankingRequest(
                 firmbankingRequestId = firmbankingRequestId.firmbankingRequestId,
@@ -30,13 +32,14 @@ class FirmbankingRequest private constructor(
                 toBankAccountNumber = toBankAccountNumber.toBankAccountNumber,
                 moneyAmount = moneyAmount.moneyAmount,
                 firmbankingStatus = firmbankingStatus.firmbankingStatus,
-                uuid
+                uuid,
+                aggregateIdentifier = aggregateIdentifier.aggregateIdentifier
             )
         }
     }
 }
 @JvmInline
-value class FirmbankingRequestId constructor(val firmbankingRequestId: Long)
+value class FirmbankingRequestId(val firmbankingRequestId: Long)
 @JvmInline
 value class FromBankName constructor(val fromBankName: String)
 @JvmInline
@@ -49,4 +52,6 @@ value class ToBankAccountNumber constructor(val toBankAccountNumber: String)
 value class MoneyAmount constructor(val moneyAmount: Int)
 @JvmInline
 value class FirmbankingStatus constructor(val firmbankingStatus: Int)
+@JvmInline
+value class FirmbankingRequestAggregateIdentifier constructor(val aggregateIdentifier: String)
 

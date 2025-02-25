@@ -1,7 +1,19 @@
 
+
+axon:
+  axonserver:
+    servers: localhost:8124
+  serializer:
+    events: jackson
+    messages: jackson
+    general: xstream
+
+
+
 spring:
   application:
     name: banking-service
+
   datasource:
     url: jdbc:mysql://localhost:3306/mk_pay?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: mysqluser
@@ -13,3 +25,14 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
+
+kafka:
+  clusters:
+    bootstrap-servers: http://localhost:9092
+logging:
+  topic: mkpay.logging.out.stdout
+
+task:
+  result:
+    topic: mkpay.task.result.topic
+  topic: mkpay.task.topic
