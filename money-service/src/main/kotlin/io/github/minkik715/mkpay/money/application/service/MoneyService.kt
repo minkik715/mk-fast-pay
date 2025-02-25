@@ -4,7 +4,10 @@ import RechargingMoneyTask
 import io.github.minkik715.mkpay.common.CountDownLatchManger
 import io.github.minkik715.mkpay.common.SubTask
 import io.github.minkik715.mkpay.common.UseCase
-import io.github.minkik715.mkpay.common.feign.membership.MembershipFeign
+import io.github.minkik715.mkpay.money.adapter.out.axon.command.CreateMemberMoneyAxonCommand
+import io.github.minkik715.mkpay.money.adapter.out.axon.command.IncreaseMoneyAxonCommand
+import io.github.minkik715.mkpay.money.adapter.out.axon.event.IncreaseMoneyAxonEvent
+import io.github.minkik715.mkpay.money.application.port.`in`.CreateMemberMoneyCommand
 import io.github.minkik715.mkpay.money.application.port.`in`.IncreaseMoneyCommand
 import io.github.minkik715.mkpay.money.application.port.`in`.MoneyUseCase
 import io.github.minkik715.mkpay.money.application.port.out.MemberMoneyPort
@@ -15,6 +18,8 @@ import io.github.minkik715.mkpay.money.application.port.out.svc.BankPort
 import io.github.minkik715.mkpay.money.application.port.out.svc.MembershipPort
 import io.github.minkik715.mkpay.money.domain.*
 import jakarta.transaction.Transactional
+import org.axonframework.commandhandling.gateway.CommandGateway
+import org.axonframework.eventhandling.EventHandler
 import java.util.Date
 import java.util.UUID
 
@@ -25,7 +30,8 @@ class MoneyService(
     private val bankPort: BankPort,
     private val membershipPort: MembershipPort,
     private val sendRechargingMoneyTaskPort: SendRechargingMoneyTaskPort,
-    private val countDownLatchManger: CountDownLatchManger
+    private val countDownLatchManger: CountDownLatchManger,
+    private val commandGateway: CommandGateway
 ):  MoneyUseCase{
 
     @Transactional
@@ -144,5 +150,56 @@ class MoneyService(
         // 5. Consume ok, Logic
         countDownLatchManger.clean(mainTask.taskId)
         return moneyChangingRequest
+    }
+
+    override fun requestIncreaseMoneyByEvent(command: IncreaseMoneyCommand) {
+        memberMoneyPort.getMoneyByMembershipId(TargetMembershipId(command.targetMembershipId))?.let {
+            val axonCommand = IncreaseMoneyAxonCommand(
+                command.targetMembershipId,
+                command.amount,
+                it.aggregateIdentifier.aggregateIdentifier
+            )
+            commandGateway.send<String>(axonCommand)
+                .exceptionally{ throwable ->
+                    throw throwable
+                }
+                .join()
+        }
+    }
+
+    override fun requestCreateMemberMoney(command: CreateMemberMoneyCommand) {
+        val eventId = UUID.randomUUID().toString()
+        val axonCommand = CreateMemberMoneyAxonCommand(eventId, command.membershipId)
+        commandGateway.send<String>(axonCommand).whenComplete { aggregateIdentifier, throwable ->
+            if (throwable != null) {
+                throw throwable
+            }
+             memberMoneyPort.createMemberMoney(
+                MembershipId(command.membershipId),
+                LinkedBankAccount(false),
+                MoneyAggregateIdentifier(aggregateIdentifier)
+            )
+        }.join()
+    }
+
+    @EventHandler
+    fun on(event: IncreaseMoneyAxonEvent) {
+        val moneyChangingRequest = moneyPort.createIncreaseMoneyChanging(
+            TargetMembershipId(event.targetMembershipId),
+            ChangingTypeField(MoneyChangingRequest.ChangingType.INCREASING),
+            ChangingMoneyAmount(event.amount),
+            ChangingMoneyStatusField(MoneyChangingRequest.ChangingMoneyStatus.REQUESTED),
+            CreatedAt(Date(System.currentTimeMillis()))
+        )
+
+        memberMoneyPort.increaseMemberMoney(MembershipId(event.targetMembershipId), Balance(event.amount), LinkedBankAccount(true))
+
+        moneyPort.updateMoneyChangingStatus(UpdateMoneyChangingStatusRequest(
+            MoneyChangingRequestId(moneyChangingRequest.moneyChangingRequestId),
+            ChangingMoneyStatusField(MoneyChangingRequest.ChangingMoneyStatus.SUCCEEDED),
+            UUID.randomUUID().toString()
+        ))
+
+        //사용자에게 알람보내기
     }
 }

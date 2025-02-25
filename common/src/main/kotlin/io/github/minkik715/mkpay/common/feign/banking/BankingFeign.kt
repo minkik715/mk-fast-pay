@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.PathVariable
 @Component
 interface BankingFeign {
     @GetMapping("/bank-accounts/{membershipId}")
-    fun getMembershipByMemberId(@PathVariable("membershipId") membershipId: Long): ResponseEntity<List<BankAccountFeignResponse>>
+    fun getBankAccounts(@PathVariable("membershipId") membershipId: Long): ResponseEntity<List<BankAccountFeignResponse>>
 }

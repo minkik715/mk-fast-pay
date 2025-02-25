@@ -4,6 +4,7 @@ import io.github.minkik715.mkpay.common.PersistenceAdapter
 import io.github.minkik715.mkpay.money.application.port.out.MoneyPort
 import io.github.minkik715.mkpay.money.application.port.out.UpdateMoneyChangingStatusRequest
 import io.github.minkik715.mkpay.money.domain.*
+import org.springframework.data.repository.findByIdOrNull
 import java.sql.Timestamp
 import java.util.*
 

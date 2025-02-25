@@ -8,7 +8,9 @@ class MemberMoney private constructor(
 
     val balance: Int,
 
-    val linkedBankAccount: Boolean
+    val linkedBankAccount: Boolean,
+
+    val aggregateIdentifier: MoneyAggregateIdentifier
 
  ){
 
@@ -18,17 +20,22 @@ class MemberMoney private constructor(
             membershipId: MembershipId,
             balance: Balance,
             linkedBankAccount: LinkedBankAccount,
+            aggregateIdentifier: MoneyAggregateIdentifier
         ): MemberMoney {
             return MemberMoney(
                 memberMoneyId = memberMoneyId.memberMoneyId,
                 membershipId = membershipId.membershipId,
                 balance = balance.balance,
                 linkedBankAccount = linkedBankAccount.linkedBankAccount,
+                aggregateIdentifier = aggregateIdentifier
             )
         }
     }
 
 }
+
+@JvmInline
+value class MoneyAggregateIdentifier constructor(val aggregateIdentifier: String)
 
 @JvmInline
 value class MemberMoneyId constructor(val memberMoneyId: Long)

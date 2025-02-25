@@ -4,13 +4,9 @@ import io.github.minkik715.mkpay.common.SelfValidating
 import jakarta.validation.constraints.NotBlank
 import org.hibernate.validator.constraints.Length
 
-data class IncreaseMoneyCommand(
-
-
-    val targetMembershipId: Long,
-
-    val amount: Int,
-): SelfValidating<IncreaseMoneyCommand>() {
+data class CreateMemberMoneyCommand(
+    val membershipId: Long,
+): SelfValidating<CreateMemberMoneyCommand>() {
     init {
         super.validateSelf()
     }

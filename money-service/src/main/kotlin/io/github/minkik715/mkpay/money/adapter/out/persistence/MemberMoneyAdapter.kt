@@ -1,27 +1,32 @@
 package io.github.minkik715.mkpay.money.adapter.out.persistence
 
-import RechargingMoneyTask
 import io.github.minkik715.mkpay.common.PersistenceAdapter
-import io.github.minkik715.mkpay.common.SubTask
 import io.github.minkik715.mkpay.money.application.port.out.MemberMoneyPort
 import io.github.minkik715.mkpay.money.domain.*
-import java.util.UUID
 
 @PersistenceAdapter
 class MemberMoneyAdapter(
     private val memberMoneyJpaRepository: SpringDataMemberMoneyRepository
 ): MemberMoneyPort {
+    override fun createMemberMoney(membershipId: MembershipId,  linkedBankAccount: LinkedBankAccount, aggregateIdentifier: MoneyAggregateIdentifier): MemberMoney {
+        return memberMoneyJpaRepository.save(
+            MemberMoneyJpaEntity(membershipId.membershipId, 0, linkedBankAccount.linkedBankAccount, aggregateIdentifier.aggregateIdentifier)).toDomain()
+    }
 
     override fun increaseMemberMoney(
         membershipId: MembershipId,
         balance: Balance,
-        linkedBankAccount: LinkedBankAccount
+        linkedBankAccount: LinkedBankAccount,
     ): MemberMoney {
         val memberMoneyJpaEntity = memberMoneyJpaRepository.findByMembershipId(membershipId.membershipId)?.let {
-            it.updateBalance(balance.balance)
+            it.increaseBalance(balance.balance)
             memberMoneyJpaRepository.save(it)
         } ?: memberMoneyJpaRepository.save(MemberMoneyJpaEntity(membershipId.membershipId, balance.balance, linkedBankAccount.linkedBankAccount))
 
         return memberMoneyJpaEntity.toDomain()
+    }
+
+    override fun getMoneyByMembershipId(membershipId: TargetMembershipId): MemberMoney? {
+       return memberMoneyJpaRepository.findByMembershipId(membershipId.targetMembershipId)?.toDomain()
     }
 }

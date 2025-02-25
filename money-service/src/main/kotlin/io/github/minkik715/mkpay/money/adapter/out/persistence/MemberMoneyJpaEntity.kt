@@ -1,10 +1,7 @@
 package io.github.minkik715.mkpay.money.adapter.out.persistence
 
 import io.github.minkik715.mkpay.money.domain.*
-import io.github.minkik715.mkpay.money.domain.MoneyChangingRequest.ChangingMoneyStatus
 import jakarta.persistence.*
-import java.sql.Timestamp
-import java.util.*
 
 
 @Entity
@@ -14,7 +11,9 @@ class MemberMoneyJpaEntity(
 
     private var balance: Int,
 
-    private var linkedBankAccount: Boolean
+    private var linkedBankAccount: Boolean,
+
+    private var aggregateIdentifier: String =""
 ) {
 
     @Id
@@ -27,10 +26,13 @@ class MemberMoneyJpaEntity(
             MembershipId(membershipId),
             Balance(balance),
             LinkedBankAccount(linkedBankAccount),
+            MoneyAggregateIdentifier(
+                this.aggregateIdentifier
+            )
         )
     }
 
-    fun updateBalance(balance: Int) {
+    fun increaseBalance(balance: Int) {
         this.balance += balance
     }
 }

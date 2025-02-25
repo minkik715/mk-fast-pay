@@ -11,6 +11,8 @@ plugins {
 group = "io.github.minkik715.mkpay.money"
 version = "0.0.1"
 
+val axonVersion = "4.11.1"
+
 repositories {
     mavenCentral()
 }
@@ -28,6 +30,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+    implementation("org.axonframework:axon-spring-boot-starter:$axonVersion")
+    implementation("org.axonframework:axon-configuration:$axonVersion")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

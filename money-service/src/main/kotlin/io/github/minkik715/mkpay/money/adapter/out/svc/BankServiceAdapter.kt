@@ -10,7 +10,7 @@ class BankServiceAdapter(
     private val bankingFeign: BankingFeign
 ): BankPort {
     override fun getAccountValidByMemberId(membershipId: Long): BankValidResponse? {
-        return bankingFeign.getMembershipByMemberId(membershipId).body?.first()?.let {
+        return bankingFeign.getBankAccounts(membershipId).body?.first()?.let {
              BankValidResponse(it.membershipId, it.linkedStatusIsValid)
         }
     }
