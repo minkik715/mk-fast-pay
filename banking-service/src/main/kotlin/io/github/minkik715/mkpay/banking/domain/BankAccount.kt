@@ -10,6 +10,8 @@ class BankAccount private constructor(
     val bankAccountNumber: String,
 
     val linkedStatusIsValid: Boolean,
+
+    val aggregateIdentifier: String,
 ){
 
     companion object {
@@ -18,19 +20,24 @@ class BankAccount private constructor(
             membershipId: MembershipId,
             bankName: BankName,
             bankAccountNumber: BankAccountNumber,
-            linkedStatusIsValid: LinkedStatusIstValid
+            linkedStatusIsValid: LinkedStatusIstValid,
+            bankAccountAggregateIdentifier: BankAccountAggregateIdentifier
         ): BankAccount {
             return BankAccount(
                 bankAccountId = bankAccountId.bankAccountId,
                 membershipId = membershipId.membershipId,
                 bankName = bankName.bankName,
                 bankAccountNumber = bankAccountNumber.backAccountNumber,
-                linkedStatusIsValid = linkedStatusIsValid.linkedStatusIsValid
+                linkedStatusIsValid = linkedStatusIsValid.linkedStatusIsValid,
+                aggregateIdentifier = bankAccountAggregateIdentifier.aggregateIdentifier
             )
         }
     }
 
 }
+
+@JvmInline
+value class BankAccountAggregateIdentifier constructor(val aggregateIdentifier: String)
 
 @JvmInline
 value class BankAccountId constructor(val bankAccountId: Long)

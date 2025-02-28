@@ -1,6 +1,8 @@
 package io.github.minkik715.mkpay.banking.application.service
 
+import io.github.minkik715.mkpay.banking.adapter.out.axon.command.CreateRegisteredBankAccountAxonCommand
 import io.github.minkik715.mkpay.banking.adapter.out.axon.command.RequestFirmbankingAxonCommand
+import io.github.minkik715.mkpay.banking.adapter.out.axon.event.CreateRegisteredBankAccountAxonEvent
 import io.github.minkik715.mkpay.common.UseCase
 import io.github.minkik715.mkpay.banking.application.port.`in`.FindBankAccountsCommand
 import io.github.minkik715.mkpay.banking.application.port.out.persistence.bankaccount.GetBankAccountRequest
@@ -10,13 +12,16 @@ import io.github.minkik715.mkpay.banking.application.port.out.persistence.bankac
 import io.github.minkik715.mkpay.banking.application.port.out.external.BankExternalPort
 import io.github.minkik715.mkpay.banking.application.port.out.svc.membership.MembershipPort
 import io.github.minkik715.mkpay.banking.domain.*
-import java.util.UUID
+import org.axonframework.commandhandling.gateway.CommandGateway
+import org.axonframework.eventhandling.EventHandler
+import java.util.*
 
 @UseCase
 class BankAccountService(
     private val bankAccountPort: BankAccountPort,
     private val bankExternalPort: BankExternalPort,
-    private val membershipPort: MembershipPort
+    private val membershipPort: MembershipPort,
+    private val commandGateway: CommandGateway,
 ): BankAccountUseCase {
     override fun createRegisteredBankAccount(command: RegisterAccountCommand): BankAccount? {
 
@@ -55,9 +60,34 @@ class BankAccountService(
         }
     }
 
+    override fun createRegisteredBankAccountByEvent(command: RegisterAccountCommand) {
+        commandGateway.send<String>(CreateRegisteredBankAccountAxonCommand(
+            UUID.randomUUID().toString(),
+            command.membershipId,
+            command.bankName,
+            command.bankAccountNumber,
+        )).exceptionally {
+            throw it
+        }
+    }
+
+    @EventHandler
+    fun on(event: CreateRegisteredBankAccountAxonEvent) {
+        bankAccountPort.createRegisteredBankAccount(
+            MembershipId(event.membershipId),
+            BankName(event.bankName),
+            BankAccountNumber(event.bankAccountNumber),
+            LinkedStatusIstValid(true),
+            BankAccountAggregateIdentifier(event.aggregateIdentifier)
+        )
+        //사용자에게 알람보내기
+    }
+
     override fun getBankAccounts(command: FindBankAccountsCommand): List<BankAccount> {
         //membershipId 유효성 검사 필요
 
         return bankAccountPort.findBankAccounts(MembershipId(command.membershipId))
     }
+
+
 }

@@ -5,7 +5,7 @@ import io.github.minkik715.mkpay.common.CountDownLatchManger
 import io.github.minkik715.mkpay.common.SubTask
 import io.github.minkik715.mkpay.common.UseCase
 import io.github.minkik715.mkpay.money.adapter.out.axon.command.CreateMemberMoneyAxonCommand
-import io.github.minkik715.mkpay.money.adapter.out.axon.command.IncreaseMoneyAxonCommand
+import io.github.minkik715.mkpay.money.adapter.out.axon.command.RechargingRequestCreatedAxonCommand
 import io.github.minkik715.mkpay.money.adapter.out.axon.event.IncreaseMoneyAxonEvent
 import io.github.minkik715.mkpay.money.application.port.`in`.CreateMemberMoneyCommand
 import io.github.minkik715.mkpay.money.application.port.`in`.IncreaseMoneyCommand
@@ -20,6 +20,7 @@ import io.github.minkik715.mkpay.money.domain.*
 import jakarta.transaction.Transactional
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.eventhandling.EventHandler
+import org.hibernate.validator.internal.constraintvalidators.hv.UUIDValidator
 import java.util.Date
 import java.util.UUID
 
@@ -31,8 +32,9 @@ class MoneyService(
     private val membershipPort: MembershipPort,
     private val sendRechargingMoneyTaskPort: SendRechargingMoneyTaskPort,
     private val countDownLatchManger: CountDownLatchManger,
-    private val commandGateway: CommandGateway
+    private val commandGateway: CommandGateway,
 ):  MoneyUseCase{
+
 
     @Transactional
     override fun requestIncreaseMoney(command: IncreaseMoneyCommand): MoneyChangingRequest {
@@ -154,12 +156,18 @@ class MoneyService(
 
     override fun requestIncreaseMoneyByEvent(command: IncreaseMoneyCommand) {
         memberMoneyPort.getMoneyByMembershipId(TargetMembershipId(command.targetMembershipId))?.let {
-            val axonCommand = IncreaseMoneyAxonCommand(
+            val rechargingRequestCreatedAxonCommand = RechargingRequestCreatedAxonCommand(
+                it.aggregateIdentifier.aggregateIdentifier,
+                UUID.randomUUID().toString(),
+                command.targetMembershipId,
+                command.amount
+            )
+            /*val axonCommand = IncreaseMoneyAxonCommand(
                 command.targetMembershipId,
                 command.amount,
                 it.aggregateIdentifier.aggregateIdentifier
-            )
-            commandGateway.send<String>(axonCommand)
+            )*/
+            commandGateway.send<String>(rechargingRequestCreatedAxonCommand)
                 .exceptionally{ throwable ->
                     throw throwable
                 }
@@ -174,7 +182,7 @@ class MoneyService(
             if (throwable != null) {
                 throw throwable
             }
-             memberMoneyPort.createMemberMoney(
+            memberMoneyPort.createMemberMoney(
                 MembershipId(command.membershipId),
                 LinkedBankAccount(false),
                 MoneyAggregateIdentifier(aggregateIdentifier)

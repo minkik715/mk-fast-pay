@@ -35,6 +35,19 @@ class BankAccountController(
     }
 
 
+    @PostMapping("/bank-accounts-eda")
+    fun registerMembershipByEvent(@RequestBody request: RegisterAccountRequest) {
+        // request -> Command (Requst 변화에 따른 Command/ UseCase 변화 최소화)
+        val command = RegisterAccountCommand(
+            bankAccountNumber = request.bankAccountNumber,
+            membershipId = request.membershipId,
+            bankName = request.bankName,
+            linkedStatusIsValid = request.linkedStatusIsValid,
+        )
+        bankAccountUseCase.createRegisteredBankAccountByEvent(command)
+    }
+
+
 
 
 }

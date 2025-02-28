@@ -4,5 +4,7 @@ import io.github.minkik715.mkpay.banking.domain.BankAccount
 
 interface BankAccountUseCase {
     fun createRegisteredBankAccount(command: RegisterAccountCommand): BankAccount?
+    fun createRegisteredBankAccountByEvent(command: RegisterAccountCommand)
+
     fun getBankAccounts(command: FindBankAccountsCommand): List<BankAccount>?
 }

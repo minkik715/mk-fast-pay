@@ -1,10 +1,11 @@
 package io.github.minkik715.mkpay.money.adapter.out.axon.command
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier
-import java.util.*
 
-data class CreateMemberMoneyAxonCommand(
+data class RechargingRequestCreatedAxonCommand(
     @TargetAggregateIdentifier
-    val aggregateIdentifier: String = UUID.randomUUID().toString(),
+    val aggregateIdentifier: String ="",
+    val rechargingRequestId: String = "",
     val membershipId: Long = 0L,
+    val amount: Int = 0,
 )

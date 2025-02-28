@@ -7,7 +7,8 @@ interface BankAccountPort {
         membershipId: MembershipId,
         bankName: BankName,
         bankAccountNumber: BankAccountNumber,
-        linkedStatusIsValid: LinkedStatusIstValid
+        linkedStatusIsValid: LinkedStatusIstValid,
+        aggregateIdentifier: BankAccountAggregateIdentifier = BankAccountAggregateIdentifier(""),
     ): BankAccount
 
     fun findBankAccounts(membershipId: MembershipId): List<BankAccount>

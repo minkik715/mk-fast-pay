@@ -14,6 +14,8 @@ class BankAccountJpaEntity(
     val bankAccountNumber: String,
 
     val linkedStatusIsValid: Boolean,
+
+    val aggregateIdentifier: String? = null,
 ) {
 
     @Id
@@ -26,7 +28,8 @@ class BankAccountJpaEntity(
             MembershipId(membershipId),
             BankName(bankName),
             BankAccountNumber(bankAccountNumber),
-            LinkedStatusIstValid(linkedStatusIsValid)
+            LinkedStatusIstValid(linkedStatusIsValid),
+            BankAccountAggregateIdentifier(aggregateIdentifier?: "")
         )
     }
 }

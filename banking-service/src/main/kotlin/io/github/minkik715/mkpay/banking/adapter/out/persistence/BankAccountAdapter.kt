@@ -12,14 +12,16 @@ class BankAccountAdapter(
         membershipId: MembershipId,
         bankName: BankName,
         bankAccountNumber: BankAccountNumber,
-        linkedStatusIsValid: LinkedStatusIstValid
+        linkedStatusIsValid: LinkedStatusIstValid,
+        aggregateIdentifier: BankAccountAggregateIdentifier
     ): BankAccount {
         return springDataRegisteredBankAccountRepository.save(
             BankAccountJpaEntity(
                 membershipId = membershipId.membershipId,
                 bankName = bankName.bankName,
                 bankAccountNumber = bankAccountNumber.backAccountNumber,
-                linkedStatusIsValid = linkedStatusIsValid.linkedStatusIsValid
+                linkedStatusIsValid = linkedStatusIsValid.linkedStatusIsValid,
+                aggregateIdentifier = aggregateIdentifier.aggregateIdentifier,
             )
         ).toDomain()
     }

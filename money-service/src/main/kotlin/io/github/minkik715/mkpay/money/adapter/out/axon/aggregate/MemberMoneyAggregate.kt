@@ -2,8 +2,11 @@ package io.github.minkik715.mkpay.money.adapter.out.axon.aggregate
 
 import io.github.minkik715.mkpay.money.adapter.out.axon.command.CreateMemberMoneyAxonCommand
 import io.github.minkik715.mkpay.money.adapter.out.axon.command.IncreaseMoneyAxonCommand
+import io.github.minkik715.mkpay.money.adapter.out.axon.command.RechargingRequestCreatedAxonCommand
 import io.github.minkik715.mkpay.money.adapter.out.axon.event.CreateMemberMoneyAxonEvent
 import io.github.minkik715.mkpay.money.adapter.out.axon.event.IncreaseMoneyAxonEvent
+import io.github.minkik715.mkpay.money.adapter.out.axon.event.RechargingRequestCreatedAxonEvent
+import io.github.minkik715.mkpay.money.application.port.out.svc.BankPort
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateIdentifier
@@ -28,14 +31,15 @@ class MemberMoneyAggregate(
 
     @CommandHandler
     constructor(cmd: CreateMemberMoneyAxonCommand): this() {
-        println("MemberMoneyCreatedCommand Gateway Handler")
-        this.id = cmd.eventId
-        apply(CreateMemberMoneyAxonEvent(cmd.eventId, cmd.membershipId))
+        println("CreateMemberMoneyAxonCommand Gateway Handler")
+        this.id = cmd.aggregateIdentifier
+        apply(CreateMemberMoneyAxonEvent(cmd.aggregateIdentifier, cmd.membershipId))
     }
 
     @EventSourcingHandler
     fun on(event: CreateMemberMoneyAxonEvent) {
-        println("MemberMoneyCreatedCommand EventSouring Handler")
+        println("CreateMemberMoneyAxonEvent EventSouring Handler?")
+        println(event)
         this.id = event.id
         this.membershipId = event.membershipId
         this.balance = 0;
@@ -44,7 +48,7 @@ class MemberMoneyAggregate(
 
     @CommandHandler
     fun handle(cmd: IncreaseMoneyAxonCommand): String{
-        println("MemberMoneyCreatedCommand Gateway Handler")
+        println("IncreaseMoneyAxonCommand Gateway Handler")
         this.id = cmd.aggregateIdentifier
         apply(IncreaseMoneyAxonEvent(cmd.targetMembershipId, cmd.amount, cmd.aggregateIdentifier))
         return cmd.aggregateIdentifier
@@ -52,10 +56,32 @@ class MemberMoneyAggregate(
 
     @EventSourcingHandler
     fun on(event: IncreaseMoneyAxonEvent) {
-        println("MemberMoneyCreatedCommand EventSouring Handler")
+        println("IncreaseMoneyAxonEvent EventSouring Handler")
         this.id = event.aggregateIdentifier
         this.membershipId = event.targetMembershipId
         this.balance += event.amount
+    }
+
+
+    @CommandHandler
+    fun handle(cmd: RechargingRequestCreatedAxonCommand, bankPort: BankPort) {
+        println("RechargingRequestCreatedAxonCommand Gateway Handler")
+        this.id = cmd.aggregateIdentifier
+
+        val bankAccountIdentifier = bankPort.getRegisteredBankAccount(cmd.membershipId)?: throw RuntimeException("bank account not found")
+
+        println("bankAccountIdentifier: $bankAccountIdentifier")
+
+        apply(RechargingRequestCreatedAxonEvent(
+            cmd.aggregateIdentifier,
+            cmd.rechargingRequestId,
+            cmd.membershipId,
+            cmd.amount,
+            bankAccountIdentifier.aggregateIdentifier,
+            bankAccountIdentifier.bankAccountNumber,
+            bankAccountIdentifier.bankName
+        )
+        )
     }
 }
 

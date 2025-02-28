@@ -4,6 +4,7 @@ import io.github.minkik715.mkpay.common.ServiceAdapter
 import io.github.minkik715.mkpay.common.feign.banking.BankingFeign
 import io.github.minkik715.mkpay.money.application.port.out.svc.BankPort
 import io.github.minkik715.mkpay.money.application.port.out.svc.BankValidResponse
+import io.github.minkik715.mkpay.money.application.port.out.svc.RegisteredBankAccountAggregate
 
 @ServiceAdapter
 class BankServiceAdapter(
@@ -12,6 +13,18 @@ class BankServiceAdapter(
     override fun getAccountValidByMemberId(membershipId: Long): BankValidResponse? {
         return bankingFeign.getBankAccounts(membershipId).body?.first()?.let {
              BankValidResponse(it.membershipId, it.linkedStatusIsValid)
+        }
+    }
+
+    override fun getRegisteredBankAccount(membershipId: Long): RegisteredBankAccountAggregate? {
+        return bankingFeign.getBankAccounts(membershipId).body?.first()?.let {
+            RegisteredBankAccountAggregate(
+                "",
+                it.bankAccountId,
+                it.membershipId,
+                it.bankName,
+                it.bankAccountNumber
+            )
         }
     }
 }

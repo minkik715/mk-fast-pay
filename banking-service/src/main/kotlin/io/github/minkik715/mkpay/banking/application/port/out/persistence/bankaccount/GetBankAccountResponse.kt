@@ -3,5 +3,6 @@ package io.github.minkik715.mkpay.banking.application.port.out.persistence.banka
 data class GetBankAccountResponse(
     val bankName: String,
     val bankAccountNumber: String,
-    val isValid: Boolean
+    val isValid: Boolean,
+    val amount: Int = 9999999
 )
