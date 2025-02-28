@@ -67,7 +67,6 @@ class MemberMoneyAggregate(
     fun handle(cmd: RechargingRequestCreatedAxonCommand, bankPort: BankPort) {
         println("RechargingRequestCreatedAxonCommand Gateway Handler")
         this.id = cmd.aggregateIdentifier
-
         val bankAccountIdentifier = bankPort.getRegisteredBankAccount(cmd.membershipId)?: throw RuntimeException("bank account not found")
 
         println("bankAccountIdentifier: $bankAccountIdentifier")

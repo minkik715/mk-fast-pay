@@ -1,6 +1,6 @@
 package io.github.minkik715.mkpay.banking.application.service
 
-import io.github.minkik715.mkpay.banking.adapter.out.axon.command.RequestFirmbankingAxonCommand
+import io.github.minkik715.mkpay.banking.adapter.out.axon.command.RequestFirmbankingByEventAxonCommand
 import io.github.minkik715.mkpay.banking.adapter.out.axon.command.UpdateFirmbankingAxonCommand
 import io.github.minkik715.mkpay.banking.adapter.out.axon.event.RequestFirmbankingAxonEvent
 import io.github.minkik715.mkpay.banking.adapter.out.axon.event.UpdateFirmbankingAxonEvent
@@ -74,7 +74,7 @@ class FirmbankingService(
     //axon adapter 쪽으로 뺴야됨
     override fun requestFirmbankingByEvent(command: FirmbankingRequestCommand) {
         val aggregateIdentifier = UUID.randomUUID().toString()
-        commandGateway.send<String>(RequestFirmbankingAxonCommand(
+        commandGateway.send<String>(RequestFirmbankingByEventAxonCommand(
             aggregateIdentifier,
             command.fromBankName,
             command.fromBankAccountNumber,

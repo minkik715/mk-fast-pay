@@ -19,7 +19,7 @@ class BankServiceAdapter(
     override fun getRegisteredBankAccount(membershipId: Long): RegisteredBankAccountAggregate? {
         return bankingFeign.getBankAccounts(membershipId).body?.first()?.let {
             RegisteredBankAccountAggregate(
-                "",
+                it.aggregateIdentifier,
                 it.bankAccountId,
                 it.membershipId,
                 it.bankName,

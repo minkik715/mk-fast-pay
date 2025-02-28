@@ -46,7 +46,7 @@ class RegisteredBankAccountAggregate() {
     @CommandHandler
     fun handle(cmd: CheckRegisteredBankAccountAxonCommand, bankExternalPort: BankExternalPort) {
         println("CheckRegisteredBankAccountCommand called")
-
+        println("cmd:  $cmd")
         id = cmd.aggregateIdentifier
 
         val bankAccountInfo =
@@ -55,11 +55,11 @@ class RegisteredBankAccountAggregate() {
         val isValidAccount = bankAccountInfo.isValid
 
         val firmbankingRequestId: String = UUID.randomUUID().toString()
-
+        println("firmbankingRequestId: $firmbankingRequestId")
         apply(
             CheckRegisteredBankAccountAxonEvent(
                 cmd.rechargeRequestId,
-                id,
+                cmd.checkRegisterBankAccountId,
                 cmd.membershipId,
                 isValidAccount,
                 cmd.amount,

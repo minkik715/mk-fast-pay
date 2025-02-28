@@ -24,9 +24,6 @@ import java.util.*
 @Saga
 class MoneyRechargeSaga{
 
-    @Autowired
-    private lateinit var memberMoneyPort: MemberMoneyPort
-
     @Transient
     @Autowired
     private lateinit var commandGateway: CommandGateway
@@ -76,7 +73,8 @@ class MoneyRechargeSaga{
 
         val requestFirmbankingId = UUID.randomUUID().toString()
 
-        SagaLifecycle.associateWith("requestFirmBankingId", requestFirmbankingId)
+        SagaLifecycle.associateWith("requestFirmbankingId", requestFirmbankingId)
+        println("requestFirmbankingId: $requestFirmbankingId")
 
         commandGateway.send<String>(
             RequestFirmbankingAxonCommand(
@@ -100,7 +98,7 @@ class MoneyRechargeSaga{
         val resultCode: Int = event.status
 
 
-        if(resultCode == 0){
+        if(resultCode != 0){
 
         }else{
             // 보상 트랜 잭션
@@ -137,7 +135,7 @@ class MoneyRechargeSaga{
     }
 
     @EndSaga
-    @SagaEventHandler(associationProperty = "rollbackFirmbankingId")9
+    @SagaEventHandler(associationProperty = "rollbackFirmbankingId")
     fun handle(rollbackFirmbankingFinishedEvent: RollbackFirmbankingFinishedEvent){
         println("Recharging request finished: $rollbackFirmbankingFinishedEvent")
         val rollbackFirmbankingId = rollbackFirmbankingFinishedEvent.rollbackFirmbankingId

@@ -12,7 +12,8 @@ services:
       - ./axon-server/data:/axon-server/data
       - ./axon-server/events:/axon-server/events
       - ./axon-server/config:/axon-server/config:ro
-
+    environment:
+      - AXONIQ_AXONSERVER_STANDALONE=true
   zookeeper:
     image: 'zookeeper:3.8'
     networks:

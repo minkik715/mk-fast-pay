@@ -2,7 +2,7 @@ package io.github.minkik715.mkpay.banking.adapter.out.axon.command
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier
 
-data class RequestFirmbankingAxonCommand(
+data class RequestFirmbankingByEventAxonCommand(
     @TargetAggregateIdentifier
     var aggregateIdentifier: String,
 

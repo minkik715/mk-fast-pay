@@ -1,7 +1,6 @@
 package io.github.minkik715.mkpay.banking.application.service
 
 import io.github.minkik715.mkpay.banking.adapter.out.axon.command.CreateRegisteredBankAccountAxonCommand
-import io.github.minkik715.mkpay.banking.adapter.out.axon.command.RequestFirmbankingAxonCommand
 import io.github.minkik715.mkpay.banking.adapter.out.axon.event.CreateRegisteredBankAccountAxonEvent
 import io.github.minkik715.mkpay.common.UseCase
 import io.github.minkik715.mkpay.banking.application.port.`in`.FindBankAccountsCommand

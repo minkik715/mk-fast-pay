@@ -1,6 +1,6 @@
 package io.github.minkik715.mkpay.banking.adapter.out.axon.aggregate
 
-import io.github.minkik715.mkpay.banking.adapter.out.axon.command.RequestFirmbankingAxonCommand
+import io.github.minkik715.mkpay.banking.adapter.out.axon.command.RequestFirmbankingByEventAxonCommand
 import io.github.minkik715.mkpay.banking.adapter.out.axon.command.UpdateFirmbankingAxonCommand
 import io.github.minkik715.mkpay.banking.adapter.out.axon.event.RequestFirmbankingAxonEvent
 import io.github.minkik715.mkpay.banking.adapter.out.axon.event.UpdateFirmbankingAxonEvent
@@ -8,6 +8,7 @@ import io.github.minkik715.mkpay.banking.application.port.out.external.BankExter
 import io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking.FirmBankingPort
 import io.github.minkik715.mkpay.banking.application.port.out.persistence.firmbanking.FirmbankingExternalRequest
 import io.github.minkik715.mkpay.banking.domain.*
+import io.github.minkik715.mkpay.common.`interface`.axon.command.RequestFirmbankingAxonCommand
 import io.github.minkik715.mkpay.common.`interface`.axon.command.RollbackFirmbankingRequestCommand
 import io.github.minkik715.mkpay.common.`interface`.axon.event.RequestFirmbankingFinishedEvent
 import io.github.minkik715.mkpay.common.`interface`.axon.event.RollbackFirmbankingFinishedEvent
@@ -16,7 +17,6 @@ import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.spring.stereotype.Aggregate
 import org.axonframework.modelling.command.AggregateLifecycle.apply
-import java.util.*
 
 @Aggregate
 class FirmbankingRequestAggregate() {
@@ -32,7 +32,7 @@ class FirmbankingRequestAggregate() {
     private var firmbankingStatus: Int = -1
 
     @CommandHandler
-    constructor(cmd: RequestFirmbankingAxonCommand): this() {
+    constructor(cmd: RequestFirmbankingByEventAxonCommand): this() {
         println("CreateFirmbankingRequestAxonCommand called")
         apply(RequestFirmbankingAxonEvent(
             aggregateIdentifier = cmd.aggregateIdentifier,
@@ -80,10 +80,10 @@ class FirmbankingRequestAggregate() {
 
 
     @CommandHandler
-    fun handle(cmd: io.github.minkik715.mkpay.common.`interface`.axon.command.RequestFirmbankingAxonCommand,
+    constructor(cmd: RequestFirmbankingAxonCommand,
                requestFirmBankingPort: FirmBankingPort,
                bankExternalPort: BankExternalPort
-    ) {
+    ) : this() {
         println("RequestFirmbankingAxonCommand called $cmd")
 
         id = cmd.aggregateIdentifier
@@ -109,7 +109,7 @@ class FirmbankingRequestAggregate() {
         )
 
         val resultCode = externalFirmbankingResult.resultCode
-
+        println("requestFirmbankingId: ${cmd.requestFirmbankingId}")
         apply(
             RequestFirmbankingFinishedEvent(
                 cmd.requestFirmbankingId,
