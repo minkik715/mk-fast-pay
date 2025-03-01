@@ -1,10 +1,7 @@
 package io.github.minkik715.mkpay.membership.application.service
 
 import io.github.minkik715.mkpay.common.UseCase
-import io.github.minkik715.mkpay.membership.application.port.`in`.FindMembershipCommand
-import io.github.minkik715.mkpay.membership.application.port.`in`.MembershipUseCase
-import io.github.minkik715.mkpay.membership.application.port.`in`.ModifyMembershipCommand
-import io.github.minkik715.mkpay.membership.application.port.`in`.RegisterMembershipCommand
+import io.github.minkik715.mkpay.membership.application.port.`in`.*
 import io.github.minkik715.mkpay.membership.application.port.out.MembershipOutPort
 import io.github.minkik715.mkpay.membership.domain.*
 
@@ -12,10 +9,10 @@ import io.github.minkik715.mkpay.membership.domain.*
 class MembershipService(
     private val membershipOutPort: MembershipOutPort
 ): MembershipUseCase {
-    override fun getMembershipByMembershipId(query: FindMembershipCommand): Membership {
+    override fun getMembershipByMembershipId(cmd: FindMembershipCommand): Membership {
         return membershipOutPort.getMembershipByMembershipId(
             MembershipId(
-                query.membershipId
+                cmd.membershipId
             )
         ).toDomain()
     }
@@ -43,5 +40,9 @@ class MembershipService(
             MembershipIsValid(command.isValid),
             MembershipIsCorp(command.isCorp)
         ).toDomain()
+    }
+
+    override fun getMembershipByAddress(cmd: FindMembershipByAddressCommand): Set<Membership> {
+        return membershipOutPort.getMembershipByAddress(MembershipAddress(cmd.addressName))
     }
 }

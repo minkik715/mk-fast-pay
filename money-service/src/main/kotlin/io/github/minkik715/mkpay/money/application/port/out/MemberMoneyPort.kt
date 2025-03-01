@@ -17,5 +17,6 @@ interface MemberMoneyPort {
     ): MemberMoney
 
     fun getMoneyByMembershipId(membershipId: TargetMembershipId): MemberMoney?
+    fun getMoneySumByMembershipIds(membershipId: List<TargetMembershipId>): Long
 
 }

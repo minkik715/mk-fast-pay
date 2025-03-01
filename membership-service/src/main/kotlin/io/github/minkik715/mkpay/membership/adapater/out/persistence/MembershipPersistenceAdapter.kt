@@ -1,13 +1,14 @@
 package io.github.minkik715.mkpay.membership.adapater.out.persistence
 
 import io.github.minkik715.mkpay.common.PersistenceAdapter
+import io.github.minkik715.mkpay.membership.application.port.out.MembershipOutPort
 import io.github.minkik715.mkpay.membership.domain.*
 import org.springframework.data.crossstore.ChangeSetPersister
 
 @PersistenceAdapter
 class MembershipPersistenceAdapter(
     private val membershipRepository: SpringDataMembershipRepository
-): io.github.minkik715.mkpay.membership.application.port.out.MembershipOutPort {
+): MembershipOutPort {
 
     override fun createMembership(
         membershipName: MembershipName,
@@ -36,8 +37,7 @@ class MembershipPersistenceAdapter(
         membershipIsCorp: MembershipIsCorp
     ): MembershipJpaEntity {
         val entity =
-            membershipRepository.getById(membershipId.membershipId) ?: throw ChangeSetPersister.NotFoundException()
-
+            membershipRepository.findByMembershipId(membershipId.membershipId)
         val modify = entity.modify(
             membershipName,
             membershipAddress,
@@ -51,6 +51,10 @@ class MembershipPersistenceAdapter(
 
 
     override fun getMembershipByMembershipId(membershipId: MembershipId): MembershipJpaEntity {
-        return membershipRepository.getById(membershipId.membershipId) ?: throw ChangeSetPersister.NotFoundException()
+        return membershipRepository.findByMembershipId(membershipId.membershipId) ?: throw ChangeSetPersister.NotFoundException()
+    }
+
+    override fun getMembershipByAddress(address: MembershipAddress): Set<Membership> {
+        return membershipRepository.findByAddress(address.address).map { it.toDomain() }.toSet()
     }
 }

@@ -29,4 +29,11 @@ class MemberMoneyAdapter(
     override fun getMoneyByMembershipId(membershipId: TargetMembershipId): MemberMoney? {
        return memberMoneyJpaRepository.findByMembershipId(membershipId.targetMembershipId)?.toDomain()
     }
+
+    override fun getMoneySumByMembershipIds(membershipId: List<TargetMembershipId>): Long {
+        val findMoneySumByMembershipIds =
+            memberMoneyJpaRepository.findMoneySumByMembershipIds(membershipId.map { it.targetMembershipId })
+        println(findMoneySumByMembershipIds)
+        return findMoneySumByMembershipIds
+    }
 }

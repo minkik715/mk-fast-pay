@@ -11,4 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable
 interface MembershipFeign {
     @GetMapping("/memberships/{membershipId}")
     fun getMembershipByMemberId(@PathVariable("membershipId") membershipId: Long): ResponseEntity<MembershipFeignResponse>
+
+    @GetMapping("/memberships/address/{addressName}")
+    fun getMembershipByAddressName(@PathVariable("addressName") addressName: String): ResponseEntity<Set<MembershipFeignResponse>>
 }

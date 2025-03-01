@@ -1,10 +1,7 @@
 package io.github.minkik715.mkpay.membership.adapater.`in`.web
 
 import io.github.minkik715.mkpay.common.WebAdapter
-import io.github.minkik715.mkpay.membership.application.port.`in`.FindMembershipCommand
-import io.github.minkik715.mkpay.membership.application.port.`in`.MembershipUseCase
-import io.github.minkik715.mkpay.membership.application.port.`in`.ModifyMembershipCommand
-import io.github.minkik715.mkpay.membership.application.port.`in`.RegisterMembershipCommand
+import io.github.minkik715.mkpay.membership.application.port.`in`.*
 import io.github.minkik715.mkpay.membership.domain.Membership
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -22,6 +19,13 @@ class MembershipController(
 
         return ResponseEntity.ok(membershipUseCase.getMembershipByMembershipId(findMembershipCommand))
     }
+
+    @GetMapping("/memberships/address/{addressName}")
+    fun getMembershipByAddressName(@PathVariable("addressName") addressName: String): ResponseEntity<Set<Membership>> {
+        val findMembershipByAddressCommand = FindMembershipByAddressCommand(addressName)
+        return ResponseEntity.ok(membershipUseCase.getMembershipByAddress(findMembershipByAddressCommand))
+    }
+
 
     @PostMapping("/memberships")
     fun registerMembership(@RequestBody request: RegisterMembershipRequest): Membership {

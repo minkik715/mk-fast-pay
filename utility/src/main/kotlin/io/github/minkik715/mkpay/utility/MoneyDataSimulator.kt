@@ -28,7 +28,7 @@ object DummyMoneyDataSimulator {
 
         while (true) {
             var amount: Int = random.nextInt(20001) - 10000 // Random number between -100000 and 100000
-            val targetMembershipId: Int = random.nextInt(1000) + 1 // Random number between 1 and 100000
+            val targetMembershipId: Int = random.nextInt(10000) + 1 // Random number between 1 and 100000
 
             registerAccountSimulator(REGISTER_ACCOUNT_API_ENDPOINT, targetMembershipId)
             createMemberMoneySimulator(CREATE_MONEY_API_ENDPOINT, targetMembershipId)

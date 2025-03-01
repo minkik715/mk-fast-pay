@@ -8,6 +8,7 @@ import io.github.minkik715.mkpay.money.adapter.out.axon.command.CreateMemberMone
 import io.github.minkik715.mkpay.money.adapter.out.axon.command.RechargingRequestCreatedAxonCommand
 import io.github.minkik715.mkpay.money.adapter.out.axon.event.IncreaseMoneyAxonEvent
 import io.github.minkik715.mkpay.money.application.port.`in`.CreateMemberMoneyCommand
+import io.github.minkik715.mkpay.money.application.port.`in`.GetMembershipsMoneySumCommand
 import io.github.minkik715.mkpay.money.application.port.`in`.IncreaseMoneyCommand
 import io.github.minkik715.mkpay.money.application.port.`in`.MoneyUseCase
 import io.github.minkik715.mkpay.money.application.port.out.MemberMoneyPort
@@ -20,7 +21,6 @@ import io.github.minkik715.mkpay.money.domain.*
 import jakarta.transaction.Transactional
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.eventhandling.EventHandler
-import org.hibernate.validator.internal.constraintvalidators.hv.UUIDValidator
 import java.util.Date
 import java.util.UUID
 
@@ -73,6 +73,10 @@ class MoneyService(
         ))
 
         return moneyChangingRequest
+    }
+
+    override fun getMoneySumByMembershipIds(command: GetMembershipsMoneySumCommand): Long {
+        return memberMoneyPort.getMoneySumByMembershipIds(command.membershipIds.map { TargetMembershipId(it) })
     }
 
     @Transactional

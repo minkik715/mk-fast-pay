@@ -40,12 +40,12 @@ class DummyDataGenerator {
         val random = Random()
         val pstmt = conn.prepareStatement(insertQuery)
 
-        val numberOfDummyData = 1000
+        val numberOfDummyData = 10000
         val batchSize = 100  // 한 번에 처리할 배치 크기 설정
 
         conn.autoCommit = false // 수동 커밋 모드로 설정 (성능 향상)
 
-        for (i in 1..numberOfDummyData) {
+        for (i in 1001..numberOfDummyData) {
             pstmt.setLong(1, i.toLong())
             pstmt.setString(2, ADDRESSES[random.nextInt(ADDRESSES.size)])
             pstmt.setString(3, "email_$i@example.com")

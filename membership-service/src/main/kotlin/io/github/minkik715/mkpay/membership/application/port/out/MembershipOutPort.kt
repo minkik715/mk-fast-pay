@@ -7,6 +7,8 @@ import io.github.minkik715.mkpay.membership.domain.*
 interface MembershipOutPort {
 
     fun getMembershipByMembershipId(membershipId: MembershipId) :MembershipJpaEntity
+    fun getMembershipByAddress(address: MembershipAddress) :Set<Membership>
+
 
     fun createMembership(
         membershipName: MembershipName,
