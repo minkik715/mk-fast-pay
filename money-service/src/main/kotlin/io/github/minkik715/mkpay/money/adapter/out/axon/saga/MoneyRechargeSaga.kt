@@ -98,7 +98,7 @@ class MoneyRechargeSaga{
         val resultCode: Int = event.status
 
 
-        if(resultCode != 0){
+        if(resultCode == 0){
 
         }else{
             // 보상 트랜 잭션

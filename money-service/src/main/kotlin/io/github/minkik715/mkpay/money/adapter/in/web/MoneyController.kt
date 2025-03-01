@@ -42,4 +42,11 @@ class MoneyController(
          moneyUseCase.requestIncreaseMoneyByEvent(command)
     }
 
+    @PostMapping("/money/decrease-eda")
+    fun decreaseMoneyRequestEda(@RequestBody request: IncreaseMoneyRequest) {
+        // request -> Command (Requst 변화에 따른 Command/ UseCase 변화 최소화)
+        val command = IncreaseMoneyCommand(request.targetMembershipId, (-1) *request.amount)
+        moneyUseCase.requestIncreaseMoneyByEvent(command)
+    }
+
 }
