@@ -168,6 +168,25 @@ services:
       - LOGGING_TOPIC=mkpay.logging.out.stdout
       - TASK_TOPIC=mkpay.task.topic
       - TASK_RESULT_TOPIC=mkpay.task.result.topic
+  payment-service:
+    image: mk-fast-pay-payment-service:0.0.1
+    networks:
+      - mkpay_network
+    ports:
+      - "8085:8080"
+    depends_on:
+      - mysql
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/mk_pay?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=mkpay.logging.out.stdout
+      - TASK_TOPIC=mkpay.task.topic
+      - TASK_RESULT_TOPIC=mkpay.task.result.topic
   task-consumer:
     image: mk-fast-pay-task-consumer:0.0.1
     networks:

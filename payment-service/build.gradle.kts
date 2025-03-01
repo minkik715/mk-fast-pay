@@ -8,7 +8,7 @@ plugins {
     id("com.palantir.docker") version "0.36.0"
 }
 
-group = "io.github.minkik715.mkpay.remittance"
+group = "io.github.minkik715.mkpay.payment"
 version = "0.0.1"
 
 repositories {
