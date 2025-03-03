@@ -8,7 +8,7 @@ plugins {
     id("com.palantir.docker") version "0.36.0"
 }
 
-group = "io.github.minkik715.mkpay.money.aggregation"
+group = "io.github.minkik715.mkpay.money.query"
 version = "0.0.1"
 
 
@@ -29,6 +29,8 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation(platform("software.amazon.awssdk:bom:2.27.21"))
+    implementation("software.amazon.awssdk:dynamodb")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
