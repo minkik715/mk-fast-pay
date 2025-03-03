@@ -1,4 +1,4 @@
-package io.github.minkik715.mkpay.money.query.adapter.web.out
+package io.github.minkik715.mkpay.money.query.adapter.web.out.aws.dynamodb
 
 import io.github.minkik715.mkpay.money.query.adapter.axon.QueryMoneySumByAddress
 import io.github.minkik715.mkpay.money.query.application.port.out.svc.InsertMoneyChangeEventByAddress
@@ -7,18 +7,18 @@ import io.github.minkik715.mkpay.money.query.domain.MoneySumByRegion
 import io.github.minkik715.mkpay.money.query.domain.MoneySumByRegionId
 import io.github.minkik715.mkpay.money.query.domain.RegionName
 import org.axonframework.queryhandling.QueryHandler
-import org.springframework.format.datetime.DateFormatter
+import org.springframework.stereotype.Component
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.awssdk.services.dynamodb.model.*
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
+@Component
 class DynamoDBAdapter: InsertMoneyChangeEventByAddress {
-    private val dynamoDbClient: DynamoDbClient
+    private lateinit var dynamoDbClient: DynamoDbClient
 
     init {
         val credentials: AwsBasicCredentials = AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY)
@@ -29,11 +29,12 @@ class DynamoDBAdapter: InsertMoneyChangeEventByAddress {
     }
 
 
-    private fun putItem(pk: String, sk: String) {
+    private fun putItem(pk: String, sk: String, balance: String) {
         try {
             val attrMap: HashMap<String, AttributeValue> = HashMap<String, AttributeValue>()
             attrMap["PK"] = AttributeValue.builder().s(pk).build()
-            attrMap["SK"] = AttributeValue.builder().n(sk).build()
+            attrMap["SK"] = AttributeValue.builder().s(sk).build()
+            attrMap["balance"] = AttributeValue.builder().n(balance).build()
 
             val request: PutItemRequest = PutItemRequest.builder()
                 .tableName(TABLE_NAME)
@@ -46,10 +47,11 @@ class DynamoDBAdapter: InsertMoneyChangeEventByAddress {
         }
     }
 
-    private fun getItem(id: String) {
+    private fun getItem(pk: String, sk: String): MoneySumByAddress? {
         try {
             val attrMap: HashMap<String, AttributeValue> = HashMap<String, AttributeValue>()
-            attrMap["PK"] = AttributeValue.builder().s(id).build()
+            attrMap["PK"] = AttributeValue.builder().s(pk).build()
+            attrMap["SK"] = AttributeValue.builder().s(sk).build()
 
             val request: GetItemRequest = GetItemRequest.builder()
                 .tableName(TABLE_NAME)
@@ -57,9 +59,12 @@ class DynamoDBAdapter: InsertMoneyChangeEventByAddress {
                 .build()
 
             val response: GetItemResponse = dynamoDbClient.getItem(request)
-            response.item().forEach { key, value -> println("$key: $value") }
+            if(!response.hasItem()){
+                return null
+            }
+            return MoneySumByAddress.fromDynamoAttr(response.item())
         } catch (e: DynamoDbException) {
-            System.err.println("Error getting an item from the table: $e")
+            throw e
         }
     }
 
@@ -102,19 +107,75 @@ class DynamoDBAdapter: InsertMoneyChangeEventByAddress {
 
     override fun insertMoneyIncreaseEventByAddress(addressName: String, moneyIncrease: Int) {
         //raw event insert
-/*        val dateFormat = SimpleDateFormat("yyyyMMdd")
-        val formattedDate = dateFormat.format(Date())
-        val pk = "$addressName#$dateFormat"
-        val sk = moneyIncrease*/
-        // 지역 정보 잔액 증가시키기
-
-        // 지역 정보 시간별 잔액 증가시키기
-
         val dateFormat = SimpleDateFormat("yyyyMMdd")
         val formattedDate = dateFormat.format(Date())
-        val pk = addressName
-        val sk = moneyIncrease
 
-        putItem(pk, sk.toString())
+        //1. raw event insert 지역 정보 잔액 증가시키기
+        // PK: 강남구#250303 SK: 5.000
+        val pk = "$addressName#$dateFormat"
+        val sk = moneyIncrease.toString()
+        putItem(pk, sk, moneyIncrease.toString())
+
+
+        //2. 지역 정보 시간별 잔액 증가시키기
+        // PK: 강남구#250303#summary SK: -1 balance +5000
+        val summaryPk = "$pk#summary"
+        val summarySK = "=1"
+         getItem(summaryPk, summarySK)?.let {
+             val balance = it.balance + moneyIncrease
+             updateItem(summaryPk, summarySK, balance.toString())
+        }?: run{
+            putItem(summaryPk, summarySK, moneyIncrease.toString())
+        }
+
+        //3. 지역별 정보
+        // PK: 강남구 SK: -1 balance: +5000
+        val addressPk = addressName
+        val addressSk = "-1"
+        getItem(addressPk, addressSk)?.let {
+            val balance = it.balance + moneyIncrease
+            updateItem(addressPk, addressSk, balance.toString())
+        }?: run{
+            putItem(addressPk, addressSk, moneyIncrease.toString())
+        }
+    }
+
+    private fun updateItem(pk: String, sk: String, balance: String) {
+        try {
+            val attrMap = HashMap<String, AttributeValue>()
+            attrMap["PK"] = AttributeValue.builder().s(pk).build()
+            attrMap["SK"] = AttributeValue.builder().s(sk).build()
+
+            // Create an UpdateItemRequest
+            val updateItemRequest = UpdateItemRequest.builder()
+                .tableName(TABLE_NAME)
+                .key(attrMap)
+                .attributeUpdates(
+                    object : HashMap<String?, AttributeValueUpdate?>() {
+                        init {
+                            put(
+                                "balance", AttributeValueUpdate.builder()
+                                    .value(AttributeValue.builder().n(balance).build())
+                                    .action(AttributeAction.PUT)
+                                    .build()
+                            )
+                        }
+                    }
+                ).build()
+
+            val response = dynamoDbClient.updateItem(updateItemRequest)
+
+            // 결과 출력.
+            val attributes = response.attributes()
+            if (attributes != null) {
+                for ((attributeName, attributeValue) in attributes) {
+                    println("$attributeName: $attributeValue")
+                }
+            } else {
+                println("Item was updated, but no attributes were returned.")
+            }
+        } catch (e: DynamoDbException) {
+            System.err.println("Error getting an item from the table: " + e.message)
+        }
     }
 }
